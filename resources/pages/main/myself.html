@@ -1,0 +1,259 @@
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="templetes/layout.html">
+
+<head>
+    <title>个人信息管理</title>
+    <!--Demo [ DEMONSTRATION ]-->
+
+</head>
+
+<div layout:fragment="content">
+
+    <!-- Contact Toolbar -->
+    <!---------------------------------->
+    <div class="row pad-btm">
+        <div class="col-sm-6 col-sm-offset-6 toolbar-right text-right">
+            <button class="btn btn-primary" onclick="submit()">保存</button>
+        </div>
+    </div>
+    <!---------------------------------->
+
+    <div class="panel">
+        <div class="panel-heading">
+            <h3 class="panel-title">个人信息修改</h3>
+        </div>
+
+
+        <!-- BASIC FORM ELEMENTS -->
+        <!--===================================================-->
+        <form class="panel-body form-horizontal form-padding">
+
+            <!--Static-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">用户名</label>
+                <div class="col-lg-9 pad-no">
+                    <div class="clearfix">
+                        <div class="col-lg-4">
+                            <input type="text" id="name" class="form-control mar-btm"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--Password-->
+            <div class="form-group">
+                <label class="col-lg-2 control-label">密码</label>
+                <div class="col-lg-9 pad-no">
+                    <div class="clearfix">
+                        <div class="col-lg-4">
+                            <input type="password" class="form-control mar-btm" id="password" placeholder="密码">
+                        </div>
+                    </div>
+                </div>
+                <label class="col-lg-2 control-label">重复密码</label>
+                <div class="col-lg-9 pad-no">
+                    <div class="clearfix">
+                        <div class="col-lg-4">
+                            <input type="password" class="form-control mar-btm" id="password2" placeholder="再次输入你的密码">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group pad-ver">
+
+
+            </div>
+            <div class="form-group pad-ver">
+                <label class="col-lg-2 control-label">技能</label>
+
+                <div class="col-xs-1">
+                    <div class="checkbox">
+                        <input type="checkbox" class="magic-checkbox" id="skill-1" name="skill" value="c/c++">
+                        <label for="skill-1">C/C++</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" class="magic-checkbox" id="skill-2"  name="skill" value="java">
+                        <label for="skill-2">Java</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" class="magic-checkbox" id="skill-3"  name="skill" value=".net">
+                        <label for="skill-3">.Net</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" class="magic-checkbox" id="skill-4" name="skill"  value="python">
+                        <label for="skill-4">Python</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group pad-ver">
+                <label class="col-lg-2 control-label">工作经验</label>
+                <div class="col-lg-9 pad-no">
+                    <div class="col-lg-4">
+                        <input type="number" placeholder="你的经验(年)" id="experience" min="0" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--===================================================-->
+        <!-- END BASIC FORM ELEMENTS -->
+    </div>
+
+    <script>
+        getInfo();
+        var u;
+        function getInfo() {
+            $.ajax({
+                type:"POST",
+                url:"getInfo",
+                contentType:'application/json;charset=UTF-8',
+                success:function (data) {
+                   if(data != null){
+                       console.log(data);
+                       $("#name").val(data.name);
+                       $("#password").val(data.password);
+                       $("#password2").val(data.password);
+                       if(data["c/c++"]==="1"){
+                           $("#skill-1").attr("checked", 'checked');
+                       }
+                       if(data["java"]==="1"){
+                           $("#skill-2").attr("checked", 'checked');
+                       }
+                       if(data[".net"]==="1"){
+                           $("#skill-3").attr("checked", 'checked');
+                       }
+                       if(data["python"]==="1"){
+                           $("#skill-4").attr("checked", 'checked');
+                       }
+                       $("#experience").val(data.experience);
+                       u = data.user;
+                   }
+                }
+            })
+        }
+
+        function submit() {
+            var user = {
+                "account":u.account,
+                "password":$("#password").val(),
+                "name":$("#name").val(),
+                "skill":"",
+                "experience":$("#experience").val(),
+                "role":u.role
+            };
+            var flag=0;
+            $("input[name='skill']:checked").each(function () {
+                user.skill+=$(this).val()+';';
+                flag=1;
+            });
+            if(flag==0){
+                $.niftyNoty({
+                    type: 'danger',
+                    container : 'floating',
+                    title : '请选择至少一项技能',
+                    message : '',
+                    closeBtn : true,
+                    timer : 1000
+                });
+            }
+            if(checkPassword(user)&&checkPassword2()&&checkPP()&&checkName(user)&&flag){
+                user.experience=$('#experience').val();
+                $.ajax({
+                    type:"POST",
+                    url:"doInfoAlert",
+                    contentType:'application/json;charset=UTF-8',
+                    data:JSON.stringify(user),
+                    success:function (data) {
+                        if(data ==="success"){
+                            $.niftyNoty({
+                                type: 'success',
+                                container : 'floating',
+                                title : '修改成功',
+                                message : '',
+                                closeBtn : true,
+                                timer : 1000,
+                                onHidden:function () {
+                                    location = "/";
+                                }
+
+                            });
+                        }
+                    }
+                })
+            }
+        }
+
+        function checkPP() {
+            if($("#password").val() !== $("#password2").val()){
+                $.niftyNoty({
+                    type: 'danger',
+                    container : 'floating',
+                    title : '两次密码不匹配',
+                    message : '',
+                    closeBtn : true,
+                    timer : 1000
+                });
+                return false;
+            }
+            return true
+        }
+
+
+        function checkPassword(user) {
+            var password = $("#password").val();
+            if(password === ""){
+                $.niftyNoty({
+                    type: 'danger',
+                    container : 'floating',
+                    title : '请输入密码',
+                    message : '',
+                    closeBtn : true,
+                    timer : 1000
+                });
+                return false;
+            }
+            user.password = password;
+            return true;
+        }
+
+        function checkPassword2() {
+            var password = $("#password2").val();
+            if(password === ""){
+                $.niftyNoty({
+                    type: 'danger',
+                    container : 'floating',
+                    title : '请输入确认密码',
+                    message : '',
+                    closeBtn : true,
+                    timer : 1000
+                });
+                return false;
+            }
+            return true;
+        }
+        function checkName(user) {
+            var name = $("#name").val();
+            if(name === ""){
+                $.niftyNoty({
+                    type: 'danger',
+                    container : 'floating',
+                    title : '请输入昵称',
+                    message : '',
+                    closeBtn : true,
+                    timer : 1000
+                });
+                return false;
+            }
+            user.name = name;
+            return true;
+        }
+
+    </script>
+</div>
+
+
+
