@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,7 +56,7 @@ public class UserController {
     @RequestMapping(value = "/doInfoAlert")
     @ResponseBody
     public String addNewUser(@RequestBody User user, HttpSession httpSession){
-
+        user.setId(user.getId());
         userRepository.save(user);
         httpSession.setAttribute("user",user);
         return "success";
