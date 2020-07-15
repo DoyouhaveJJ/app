@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class IndexController {
+    //fucker
     @RequestMapping(value = "/myself")
     public String AddAI()
     {
