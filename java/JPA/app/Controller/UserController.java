@@ -58,7 +58,7 @@ public class UserController {
     @RequestMapping(value = "/doInfoAlert")
     @ResponseBody
     public String addNewUser(@RequestBody User user, HttpSession httpSession){
-        user.setPrivielge("");
+
         userRepository.save(user);
         httpSession.setAttribute("user",user);
         return "success";
