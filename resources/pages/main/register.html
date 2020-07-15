@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>注册</title>
+
+
+    <!--STYLESHEET-->
+    <!--=================================================-->
+
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="/css/nifty.min.css" rel="stylesheet">
+
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="/css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+
+
+    <!--=================================================-->
+
+    <!--Pace - Page Load Progress Par [OPTIONAL]-->
+    <link href="/plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="/plugins/pace/pace.min.js"></script>
+
+
+
+    <!--Demo [ DEMONSTRATION ]-->
+    <link href="/css/demo/nifty-demo.min.css" rel="stylesheet">
+
+
+
+    <!--Bootstrap Validator [ OPTIONAL ]-->
+    <link href="/plugins/bootstrap-validator/bootstrapValidator.min.css" rel="stylesheet">
+
+
+    <!--=================================================
+
+    REQUIRED
+    You must include this in your project.
+
+
+    RECOMMENDED
+    This category must be included but you may modify which plugins or components which should be included in your project.
+
+
+    OPTIONAL
+    Optional plugins. You may choose whether to include it in your project or not.
+
+
+    DEMONSTRATION
+    This is to be removed, used for demonstration purposes only. This category must not be included in your project.
+
+
+    SAMPLE
+    Some script samples which explain how to initialize plugins or components. This category should not be included in your project.
+
+
+    Detailed information and more samples can be found in the document.
+
+    =================================================-->
+
+</head>
+
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+<div id="container" class="cls-container">
+
+
+    <!-- BACKGROUND IMAGE -->
+    <!--===================================================-->
+    <div id="bg-overlay"></div>
+
+
+    <!-- REGISTRATION FORM -->
+    <!--===================================================-->
+    <div id="page-content">
+            <div class="panel-body">
+                <div class="mar-ver pad-btm">
+                    <h1 class="h3">创建账号</h1>
+                    <p>加入抽🐘带队</p>
+                </div>
+                <div class="panel">
+                    <div class="eq-height clearfix">
+                        <div class="col-md-4 eq-box-md text-center box-vmiddle-wrap bord-hor">
+
+                            <!-- Simple Promotion Widget -->
+                            <!--===================================================-->
+                            <div class="box-vmiddle pad-all">
+                                <h3 class="text-main">给👴注册</h3>
+                                <div class="pad-ver">
+                                    <i class="demo-pli-bag-coins icon-5x"></i>
+                                </div>
+                                <p class="pad-btn text-sm">老铁 <span class="text-lg text-bold text-main">666</span> 双击!</p>
+                                <br>
+                                <a class="btn btn-lg btn-primary" href="#">点了也没用</a>
+                            </div>
+                            <!--===================================================-->
+
+                        </div>
+                        <div class="col-md-8 eq-box-md eq-no-panel">
+
+                            <!-- Main Form Wizard -->
+                            <!--===================================================-->
+                            <div id="demo-main-wz">
+
+                                <!--nav-->
+                                <ul class="row wz-step wz-icon-bw wz-nav-off mar-top">
+                                    <li class="col-xs-4">
+                                        <a data-toggle="tab" href="#demo-main-tab1">
+                                            <span class="text-danger"><i class="demo-pli-information icon-2x"></i></span>
+                                            <h5 class="mar-no">账号</h5>
+                                        </a>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <a data-toggle="tab" href="#demo-main-tab2">
+                                            <span class="text-warning"><i class="demo-pli-male icon-2x"></i></span>
+                                            <h5 class="mar-no">信息</h5>
+                                        </a>
+                                    </li>
+                                    <li class="col-xs-4">
+                                        <a data-toggle="tab" href="#demo-main-tab4">
+                                            <span class="text-success"><i class="demo-pli-medal-2 icon-2x"></i></span>
+                                            <h5 class="mar-no">好了</h5>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                                <!--进度条-->
+                                <div class="progress progress-xs">
+                                    <div class="progress-bar progress-bar-primary"></div>
+                                </div>
+
+
+                                <!--form-->
+                                <form class="form-horizontal">
+                                    <div class="panel-body">
+                                        <div class="tab-content">
+
+                                            <!--注册 1-->
+                                            <div id="demo-main-tab1" class="tab-pane">
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">账号</label>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="form-control" id="account" placeholder="输入你的账号">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">密码</label>
+                                                    <div class="col-lg-9 pad-no">
+                                                        <div class="clearfix">
+                                                            <div class="col-lg-4">
+                                                                <input type="password" class="form-control mar-btm" id="password" placeholder="密码">
+                                                            </div>
+                                                            <div class="col-lg-4 text-lg-right"><label class="control-label">重复密码</label></div>
+                                                            <div class="col-lg-4"><input type="password" class="form-control" id="password2" placeholder="再次输入你的密码"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--Second tab-->
+                                            <div id="demo-main-tab2" class="tab-pane fade">
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">你的昵称</label>
+                                                    <div class="col-lg-9 pad-no">
+                                                        <div class="clearfix">
+                                                            <div class="col-lg-4">
+                                                                <input type="text" placeholder="你的昵称" id="name" class="form-control">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">技能</label>
+
+                                                        <div class="col-xs-1">
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" class="magic-checkbox" id="skill-1" name="skill" value="c/c++">
+                                                                <label for="skill-1">C/C++</label>
+                                                            </div>
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" class="magic-checkbox" id="skill-2"  name="skill" value="java">
+                                                                <label for="skill-2">Java</label>
+                                                            </div>
+                                                                <div class="checkbox">
+                                                                <input type="checkbox" class="magic-checkbox" id="skill-3"  name="skill" value=".net">
+                                                                <label for="skill-3">.Net</label>
+                                                                </div>
+                                                            <div class="checkbox">
+                                                                <input type="checkbox" class="magic-checkbox" id="skill-4" name="skill"  value="python">
+                                                                <label for="skill-4">Python</label>
+                                                            </div>
+                                                        </div>
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">工作经验</label>
+                                                    <div class="col-lg-9 pad-no">
+                                                        <div class="col-lg-4">
+                                                            <input type="number" placeholder="你的经验(年)" id="experience" min="0" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 control-label">角色</label>
+                                                    <div class="col-xs-2">
+                                                        <div class="radio">
+                                                            <input id="radio-1" class="magic-radio" type="radio"  name="role" value="0" checked>
+                                                            <label for="radio-1">技术员工</label>
+                                                            <input id="radio-2" class="magic-radio" type="radio" name="role" value="1">
+                                                            <label for="radio-2">项目经理</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!--Third tab-->
+
+                                            <!--Fourth tab-->
+                                            <div id="demo-main-tab4" class="tab-pane">
+                                                <div class="form-group">
+                                                    <div class="col-lg-9 col-lg-offset-2">
+                                                        <div class="checkbox">
+                                                            <input id="demo-checkbox-1" class="magic-checkbox" type="checkbox" name="acceptTerms">
+                                                            <label for="demo-checkbox-1">接受《反正你也不会看我也懒得写》条款</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!--Footer buttons-->
+                                    <div class="pull-right pad-rgt mar-btm">
+                                        <button type="button" class="previous btn btn-primary">上一步</button>
+                                        <button type="button" class="next btn btn-primary">下一步</button>
+                                        <button type="button" class="finish btn btn-success" onclick="doRegister()" disabled>完成</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                            <!--===================================================-->
+                            <!-- End of Main Form Wizard -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pad-all">
+                有账号了? 直接<a th:href="@{/login}" class="btn-link mar-rgt text-bold">登录</a>
+
+                <div class="media pad-top bord-top">
+                    <div class="pull-right">
+                        <a href="#" class="pad-rgt"><i class="demo-psi-facebook icon-lg text-primary"></i></a>
+                        <a href="#" class="pad-rgt"><i class="demo-psi-twitter icon-lg text-info"></i></a>
+                        <a href="#" class="pad-rgt"><i class="demo-psi-google-plus icon-lg text-danger"></i></a>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!--===================================================-->
+
+
+    <!-- DEMO PURPOSE ONLY -->
+    <!--===================================================-->
+    <div class="demo-bg">
+        <div id="demo-bg-list">
+            <div class="demo-loading"><i class="psi-repeat-2"></i></div>
+            <img class="demo-chg-bg bg-trans active" src="/img/bg-img/thumbs/bg-trns.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-1.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-2.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-3.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-4.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-5.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-6.jpg" alt="Background Image">
+            <img class="demo-chg-bg" src="/img/bg-img/thumbs/bg-img-7.jpg" alt="Background Image">
+        </div>
+    </div>
+    <!--===================================================-->
+
+
+
+</div>
+<!--===================================================-->
+<!-- END OF CONTAINER -->
+
+
+
+<!--JAVASCRIPT-->
+<!--=================================================-->
+
+<!--jQuery [ REQUIRED ]-->
+<script src="/js/jquery.min.js"></script>
+
+
+<!--BootstrapJS [ RECOMMENDED ]-->
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!--NiftyJS [ RECOMMENDED ]-->
+<script src="/js/nifty.min.js"></script>
+
+
+
+<!--Demo script [ DEMONSTRATION ]-->
+<script src="/js/demo/nifty-demo.min.js"></script>
+<!--=================================================-->
+<!--Bootstrap Wizard [ OPTIONAL ]-->
+<script src="/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+
+
+<!--Bootstrap Validator [ OPTIONAL ]-->
+<script src="/plugins/bootstrap-validator/bootstrapValidator.min.js"></script>
+
+
+<!--Form Wizard [ SAMPLE ]-->
+<script src="/js/demo/form-wizard.js"></script>
+<!--Background Image [ DEMONSTRATION ]-->
+<script src="/js/demo/bg-images.js"></script>
+<script src="/js/jpa.js"></script>
+
+<script>
+
+
+</script>
+
+</body>
+</html>

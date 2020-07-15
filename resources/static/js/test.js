@@ -1,0 +1,3 @@
+function fucker() {
+    alert("fucker")
+}
