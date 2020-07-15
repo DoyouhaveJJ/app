@@ -33,7 +33,7 @@ public class Project implements Serializable {
     @Column
     private String tech;
     @Column
-    private int status;
+    private int status;//0-未启动，1-已启动，2-已完成
     @Column
     private Date start;
     @Column
