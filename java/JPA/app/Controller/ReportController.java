@@ -9,7 +9,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -48,5 +50,12 @@ public class ReportController {
             jsonArray.add(object);
         }
         return jsonArray;
+    }
+
+    @RequestMapping(value = "/getReport")
+    @ResponseBody
+    public JSONObject getlst(@RequestBody Report r){
+        Report report = reportRepository.findFirstById(r.getId());
+        return JSONObject.parseObject(JSON.toJSONString(report));
     }
 }

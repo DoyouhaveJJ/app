@@ -7,32 +7,110 @@
     <title>我的项目质量报告</title>
     <link href="/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
     <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <!--noUiSlider [ OPTIONAL ]-->
+    <link href="/plugins/noUiSlider/nouislider.min.css" rel="stylesheet">
 </head>
 
 
 <div layout:fragment="content">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            项目列表
-        </h4>
-    </div>
-    <div class="panel-body">
-        <div id="project-toolbar">
+    <!--noUiSlider [ OPTIONAL ]-->
+    <script src="/plugins/noUiSlider/nouislider.min.js"></script>
+    <div class="modal fade" id="add-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
 
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">创建报告</h4>
+                </div>
+
+                <!--Modal body-->
+                <form class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="proj-name">项目名</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" disabled="disabled" id="proj-name" >
+                            </div>
+                        </div>
+                        <!--Text Input-->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-title">报告标题</label>
+                            <div class="col-md-9">
+                                <input type="text" id="report-title" class="form-control" placeholder="Text">
+                                <small class="help-block">上一次修改时间:<span class="label label-primary" id="report-time" ></span></small>
+                            </div>
+                        </div>
+
+                        <!--Textarea-->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-desc">报告内容</label>
+                            <div class="col-md-9">
+                                <textarea id="report-desc" rows="9" class="form-control" placeholder="请输入你的报告.."></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-desc">完成质量</label>
+                            <div class="col-md-9">
+                                <div id="report-progress"></div>
+                                <br>
+                                <div>
+                                    <strong>值 : </strong>
+                                    <span id="report-progress-val"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary col-sm-2" onclick="submit()" id="submit-btn">新建</button>
+                    </div>
+                </form>
+
+
+                <!--Modal footer-->
+
+            </div>
         </div>
-        <table id="project-table">
+    </div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                项目列表
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div id="project-toolbar">
 
-        </table>
+            </div>
+            <table id="project-table">
+
+            </table>
+        </div>
     </div>
     <script>
         getProjLst();
-
+        var list;
+        var rs_def = document.getElementById("report-progress");
+        var rs_def_value = document.getElementById("report-progress-val");
+        noUiSlider.create(rs_def,{
+            start   : [ 0 ],
+            connect : 'lower',
+            range   : {
+                'min': [  0 ],
+                'max': [ 100 ]
+            }
+        });
+        rs_def.noUiSlider.on('update', function( values, handle ) {
+            rs_def_value.innerHTML = values[handle];
+        });
         function getProjLst() {
             $.ajax({
                 type:"get",
                 url:"/getProjWithReport",
                 success:function (lst) {
                     console.log(lst);
+                    list = lst;
                     initProjTable(lst);
                 }
             });
@@ -83,13 +161,64 @@
             else  return'已完成';
         }
         function operatorbtn(value,row,index) {
-            if(row.report==-1){
-                return '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >撰写报告</button>'
+            if(row.reportid==-1){
+                return '<button class="btn btn-sm btn-success mar-rgt" onclick="createReportModal(' + index + ')" >撰写报告</button>'
             }else{
-                return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.report + ')" >编辑报告</button>'
+                return '<button class="btn btn-sm btn-primary mar-rgt" onclick="alertReportModal(' + index + ')" >编辑报告</button>'
             }
         }
+        
+        
+        function createReportModal(index) {
+            var item = list[index];
+            $("#proj-name").val(item.name);
+            $("#report-time").html("创建");
+            $("#submit-btn").html("新建报告");
+            rs_def.noUiSlider.updateOptions({
+                start   : [ 0 ]
+            });
+            $('#add-modal').modal('show');
+
+        }
+        function alertReportModal(index) {
+            var item = list[index];
+
+            $("#submit-btn").html("新建报告");
+            $("#proj-name").val(item.name);
+            $.ajax({
+                type:"get",
+                url:"/getReport",
+                data:{"id":item.reportid},
+                success:function (data) {
+                    console.log(data);
+                    $("#report-time").html(data.updatetime);
+                    rs_def.noUiSlider.updateOptions({
+                        start   : [ data.progress ]
+                    });
+                }
+            });
+
+            $('#add-modal').modal('show');
+
+        }
+/*
+    private String title;
+    private String updatetime;
+    private String description;
+    private String quality; //项目质量
+    private int number;//项目人数
+    private Long projectid;
+    private int progress;//进度
+ */
+        function submit() {
+
+        }
+
+
+
     </script>
+    
+    
 
 </div>
 

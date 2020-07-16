@@ -9,6 +9,6 @@ import java.util.List;
 public interface ReportRepository extends JpaRepository<Report,Long>
 {
     List<Report> findAll();
-    Report findById(long id);
+    Report findFirstById(long id);
     Report findFirstByProjectid(long id);
 }
