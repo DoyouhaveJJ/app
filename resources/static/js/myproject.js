@@ -86,17 +86,94 @@ function statusparse(value, row, index) {
 }
 
 function operatorbtn(value, row, index) {
-    let forced = "";
+    let forced = '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >修改</button>'+
+        '<button class="btn btn-sm btn-success mar-rgt" onclick="teamManage(' + row.id + ')" >成员管理</button>';
     if (row.status == 0) {
-        forced = '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_start(' + row.id + ')" >启动</button>';
+        forced += '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_start(' + row.id + ')" >启动</button>';
     } else if (row.status == 1) {
-        forced = '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_end(' + row.id + ')" >完成</button>';
+        forced += '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_end(' + row.id + ')" >完成</button>';
+    }else {
+        forced='';
     }
     return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.id + ')" >详细</button>' +
-        '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >修改</button>' +forced+
-        '<button class="btn btn-sm btn-success mar-rgt" onclick="turnTeam(' + row.id + ')" >添加成员</button>';
+        forced;
 }
 
+function teamManage(id) {
+    let proj = {
+        "id": id
+    };
+    $.ajax({
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/getmembers',
+        data: JSON.stringify(proj),
+        success:function (data) {
+            $('#member-table').bootstrapTable('destroy');
+            console.log(data);
+            $('#member-table').bootstrapTable({
+                toolbar: '#mem-bar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: 'true',
+                search: 'true',
+                columns: [{
+                    field:'name',
+                    align:'center',
+                    title:'姓名'
+                },{
+                    align:'center',
+                    title:'操作',
+                    formatter:removebtn
+                }],
+                data:data
+            });
+            $("#new-btn").on("click",function(){
+                turnTeam(id);
+            });
+        }
+    });
+    $('#member-modal').modal('show');
+}
+function removebtn(value,row,index) {
+    return '<button class="btn btn-sm btn-danger mar-rgt" onclick="removemember('+row.id+')">移除成员</button>';
+}
+function removemember(id) {
+    let member = {
+        "id": id
+    };
+    $.ajax({
+        type: 'post',
+        url: '/remove',
+        contentType: 'application/json;charset=UTF-8',
+        data: JSON.stringify(member),
+        success: function (data) {
+            if(data==='success'){
+                $.niftyNoty({
+                    type: 'success',
+                    container: 'floating',
+                    title: '移除成功',
+                    closeBtn: true,
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.reload();
+                    }
+                });
+            }else {
+                $.niftyNoty({
+                    type: 'danger',
+                    container: 'floating',
+                    title: '移除失败',
+                    closeBtn: true,
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+    });
+}
 function turnTeam(id){
     window.location.href="/team?id="+id;
 }
