@@ -51,7 +51,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="report-desc">完成质量</label>
+                            <label class="col-md-3 control-label" for="report-progress">完成质量</label>
                             <div class="col-md-9">
                                 <div id="report-progress"></div>
                                 <br>
@@ -61,9 +61,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-quality">评价</label>
+                            <div class="col-md-9">
+                                <div id="report-quality"></div>
+                                <br>
+                                <div>
+                                    <strong>值 : </strong>
+                                    <span id="report-quality-val"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary col-sm-2" onclick="submit()" id="submit-btn">新建</button>
+                        <button class="btn btn-primary col-sm-2" type="button" onclick="updateReport();" id="submit-btn">新建</button>
                     </div>
                 </form>
 
@@ -91,8 +102,11 @@
     <script>
         getProjLst();
         var list;
+        var selectedIndex,quality,progress;
         var rs_def = document.getElementById("report-progress");
         var rs_def_value = document.getElementById("report-progress-val");
+        var rs_step = document.getElementById('report-quality');
+        var rs_step_value = document.getElementById('report-quality-val');
         noUiSlider.create(rs_def,{
             start   : [ 0 ],
             connect : 'lower',
@@ -103,15 +117,58 @@
         });
         rs_def.noUiSlider.on('update', function( values, handle ) {
             rs_def_value.innerHTML = values[handle];
+            progress =  values[handle];
         });
+        noUiSlider.create(rs_step,{
+            start   : [ 0 ],
+            connect : 'lower',
+            step    : 20,
+            range   : {
+                'min': [  0 ],
+                'max': [ 100 ]
+            }
+        });
+        rs_step.noUiSlider.on('update', function( values, handle ) {
+            if(values[handle]<=0){
+                rs_step_value.innerHTML = '<span class="label label-default">粗糙</span>';
+            }else if(values[handle]<=20){
+                rs_step_value.innerHTML = '<span class="label label-success">优秀</span>';
+            }else if(values[handle]<=40){
+                rs_step_value.innerHTML = '<span class="label label-info">精良</span>';
+            }else if(values[handle]<=60){
+                rs_step_value.innerHTML = '<span class="label label-purple">稀有</span>';
+            }else if(values[handle]<=80){
+                rs_step_value.innerHTML = '<span class="label label-warning">史诗</span>';
+            }else if(values[handle]<=100){
+                rs_step_value.innerHTML = '<span class="label label-danger">神话</span>';
+            }
+            quality=values[handle];
+
+
+
+
+        });
+
         function getProjLst() {
             $.ajax({
                 type:"get",
                 url:"/getProjWithReport",
                 success:function (lst) {
-                    console.log(lst);
-                    list = lst;
-                    initProjTable(lst);
+                    if(lst == ""){
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '请先登录',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000
+                        });
+                    }else{
+                        console.log(lst);
+                        list = lst;
+                        initProjTable(lst);
+                    }
+
                 }
             });
         }
@@ -170,6 +227,7 @@
         
         
         function createReportModal(index) {
+            selectedIndex = index;
             var item = list[index];
             $("#proj-name").val(item.name);
             $("#report-time").html("创建");
@@ -177,24 +235,33 @@
             rs_def.noUiSlider.updateOptions({
                 start   : [ 0 ]
             });
+            rs_step.noUiSlider.updateOptions({
+                start   : [ 0 ]
+            });
             $('#add-modal').modal('show');
 
         }
         function alertReportModal(index) {
+            selectedIndex = index;
             var item = list[index];
-
-            $("#submit-btn").html("新建报告");
+            $("#submit-btn").html("更新报告");
             $("#proj-name").val(item.name);
             $.ajax({
-                type:"get",
+                type:"POST",
                 url:"/getReport",
-                data:{"id":item.reportid},
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify({"id":item.reportid}),
                 success:function (data) {
                     console.log(data);
                     $("#report-time").html(data.updatetime);
                     rs_def.noUiSlider.updateOptions({
                         start   : [ data.progress ]
                     });
+                    rs_step.noUiSlider.updateOptions({
+                        start   : [ data.quality ]
+                    });
+                    $("#report-desc").val(data.description);
+                    $("#report-title").val(data.title);
                 }
             });
 
@@ -210,7 +277,54 @@
     private Long projectid;
     private int progress;//进度
  */
-        function submit() {
+        function updateReport() {
+            var item = list[selectedIndex];
+            var report={
+                "id":item.reportid===-1?-1:item.reportid,
+                "title":$("#report-title").val(),
+                "updatetime":"-1",
+                "description":$("#report-desc").val(),
+                "quality":parseInt(quality),
+                "progress": parseInt(progress),
+                "projectid":item.id
+            }
+            console.log(report);
+            //updateReport
+
+            $.ajax({
+                type:"POST",
+                url:"/updateReport",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify(report),
+                success:function (data) {
+                    if(data==="success"){
+                        $.niftyNoty({
+                            type: 'success',
+                            container : 'floating',
+                            title : '成功更新了报告',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myreport";
+                            }
+                        });
+                    }else{
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '更新失败',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myreport";
+                            }
+                        });
+                    }
+                }
+            });
+
 
         }
 

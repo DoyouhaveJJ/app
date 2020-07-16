@@ -29,7 +29,7 @@ public class Report implements Serializable {
     @Column
     private String description;
     @Column
-    private String quality; //项目质量
+    private int quality; //项目质量
     @Column
     private int number;//项目人数
     @Column
@@ -77,11 +77,11 @@ public class Report implements Serializable {
         this.description = description;
     }
 
-    public String getQuality() {
+    public int getQuality() {
         return quality;
     }
 
-    public void setQuality(String quality) {
+    public void setQuality(int quality) {
         this.quality = quality;
     }
 
