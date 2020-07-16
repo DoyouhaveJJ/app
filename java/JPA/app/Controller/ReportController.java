@@ -2,6 +2,7 @@ package JPA.app.Controller;
 
 import JPA.app.Entity.Project;
 import JPA.app.Entity.Report;
+import JPA.app.Entity.User;
 import JPA.app.Repository.ProjectRepository;
 import JPA.app.Repository.ReportRepository;
 import com.alibaba.fastjson.JSON;
@@ -9,9 +10,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -30,12 +33,17 @@ public class ReportController {
 
     @RequestMapping(value = "/getProjWithReport")
     @ResponseBody
-    public JSONArray getlst(){
-        List<Project> projLst=projectRepository.findAll();
+    public JSONArray getList(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Project> projLst=projectRepository.findByCreaterId(u.getId());
         JSONArray jsonArray = new JSONArray();
         for(Project p : projLst){
             Report report = reportRepository.findFirstByProjectid(p.getId());
             JSONObject object = new JSONObject();
+            object.put("id",p.getId());
             object.put("name",p.getName());
             object.put("type",p.getType());
             object.put("description",p.getDescription());
@@ -48,5 +56,44 @@ public class ReportController {
             jsonArray.add(object);
         }
         return jsonArray;
+    }
+
+    @RequestMapping(value = "/getMyReport" ,method = RequestMethod.POST)
+    @ResponseBody
+    public JSONArray getMyR(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Report> reportList = reportRepository.findAllByCreaterid(u.getId());
+        return JSON.parseArray(JSON.toJSONString(reportList));
+    }
+
+    @RequestMapping(value = "/getReport",method = RequestMethod.POST)
+    @ResponseBody
+    public JSONObject getReport(@RequestBody Report r){
+        Report report = reportRepository.findFirstById(r.getId());
+        return JSON.parseObject(JSON.toJSONString(report));
+    }
+
+
+    @RequestMapping(value = "/updateReport" ,method = RequestMethod.POST)
+    @ResponseBody
+    public String getReport(HttpSession httpSession,@RequestBody Report r){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return "failure";
+        }
+        r.setUpdatetime(LocalDateTime.now().toString());
+        r.setCreaterid(u.getId());
+        try{
+            reportRepository.save(r);
+        }catch (Exception e){
+            return "failure";
+        }
+        return "success";
+
+
+
     }
 }

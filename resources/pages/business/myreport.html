@@ -7,37 +7,249 @@
     <title>我的项目质量报告</title>
     <link href="/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
     <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <!--noUiSlider [ OPTIONAL ]-->
+    <link href="/plugins/noUiSlider/nouislider.min.css" rel="stylesheet">
 </head>
 
 
 <div layout:fragment="content">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            项目列表
-        </h4>
-    </div>
-    <div class="panel-body">
-        <div id="project-toolbar">
+    <!--noUiSlider [ OPTIONAL ]-->
+    <script src="/plugins/noUiSlider/nouislider.min.js"></script>
+    <div class="modal fade" id="add-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
 
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 class="modal-title">创建报告</h4>
+                </div>
+
+                <!--Modal body-->
+                <form class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="proj-name">项目名</label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" disabled="disabled" id="proj-name" >
+                            </div>
+                        </div>
+                        <!--Text Input-->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-title">报告标题</label>
+                            <div class="col-md-9">
+                                <input type="text" id="report-title" class="form-control" placeholder="Text">
+                                <small class="help-block">上一次修改时间:<span class="label label-primary" id="report-time" ></span></small>
+                            </div>
+                        </div>
+
+                        <!--Textarea-->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-desc">报告内容</label>
+                            <div class="col-md-9">
+                                <textarea id="report-desc" rows="9" class="form-control" placeholder="请输入你的报告.."></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-progress">完成质量</label>
+                            <div class="col-md-9">
+                                <div id="report-progress"></div>
+                                <br>
+                                <div>
+                                    <strong>值 : </strong>
+                                    <span id="report-progress-val"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="report-quality">评价</label>
+                            <div class="col-md-9">
+                                <div id="report-quality"></div>
+                                <br>
+                                <div>
+                                    <strong>值 : </strong>
+                                    <span id="report-quality-val"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary col-sm-2" type="button" onclick="updateReport();" id="submit-btn">新建</button>
+                    </div>
+                </form>
+
+
+                <!--Modal footer-->
+
+            </div>
         </div>
-        <table id="project-table">
-
-        </table>
     </div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                我的报告列表
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div id="report-toolbar">
+            </div>
+            <table id="report-table">
+            </table>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                我的项目列表
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div id="project-toolbar">
+
+            </div>
+            <table id="project-table">
+
+            </table>
+        </div>
+    </div>
+
+
+
     <script>
         getProjLst();
+        getRepLst();
+        var list;
+        var selectedIndex,quality,progress;
+        var rs_def = document.getElementById("report-progress");
+        var rs_def_value = document.getElementById("report-progress-val");
+        var rs_step = document.getElementById('report-quality');
+        var rs_step_value = document.getElementById('report-quality-val');
+        noUiSlider.create(rs_def,{
+            start   : [ 0 ],
+            connect : 'lower',
+            range   : {
+                'min': [  0 ],
+                'max': [ 100 ]
+            }
+        });
+        rs_def.noUiSlider.on('update', function( values, handle ) {
+            rs_def_value.innerHTML = values[handle];
+            progress =  values[handle];
+        });
+        noUiSlider.create(rs_step,{
+            start   : [ 0 ],
+            connect : 'lower',
+            step    : 20,
+            range   : {
+                'min': [  0 ],
+                'max': [ 100 ]
+            }
+        });
+        rs_step.noUiSlider.on('update', function( values, handle ) {
+            if(values[handle]<=0){
+                rs_step_value.innerHTML = '<span class="label label-default">粗糙</span>';
+            }else if(values[handle]<=20){
+                rs_step_value.innerHTML = '<span class="label label-success">优秀</span>';
+            }else if(values[handle]<=40){
+                rs_step_value.innerHTML = '<span class="label label-info">精良</span>';
+            }else if(values[handle]<=60){
+                rs_step_value.innerHTML = '<span class="label label-purple">稀有</span>';
+            }else if(values[handle]<=80){
+                rs_step_value.innerHTML = '<span class="label label-warning">史诗</span>';
+            }else if(values[handle]<=100){
+                rs_step_value.innerHTML = '<span class="label label-danger">神话</span>';
+            }
+            quality=values[handle];
+
+
+
+
+        });
 
         function getProjLst() {
             $.ajax({
-                type:"get",
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
                 url:"/getProjWithReport",
                 success:function (lst) {
-                    console.log(lst);
-                    initProjTable(lst);
+                    if(lst == ""){
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '请先登录',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000
+                        });
+                    }else{
+                        console.log(lst);
+                        list = lst;
+                        initProjTable(lst);
+                    }
+
                 }
             });
         }
+        function getRepLst() {
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getMyReport",
+                success:function (lst) {
+                    if(lst == ""){
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '请先登录',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000
+                        });
+                    }else{
+                        initRepTable(lst);
+                    }
 
+                }
+            });
+        }
+        function initRepTable(lst){
+            $('#report-table').bootstrapTable({
+                toolbar: '#report-toolbar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: 'true',
+                search: 'true',
+                columns:[{
+                    field:'title',
+                    align:'center',
+                    title:'报告标题'
+                },{
+                    field:'description',
+                    align:'center',
+                    title:'内容',
+                    formatter:descparse
+                },{
+                    field:'quality',
+                    align:'center',
+                    title:'质量',
+                    formatter:qualityparse
+                },{
+                    field:'progress',
+                    align:'center',
+                    title:'进度',
+                    formatter:progressparse
+                },{
+                    field:'updatetime',
+                    align:'center',
+                    title:'上一次更新时间'
+                },{
+                    align:'center',
+                    title:'操作',
+                    formatter:operatorbtn
+                }],
+                data: lst
+            });
+        }
         function initProjTable(lst){
             $('#project-table').bootstrapTable({
                 toolbar: '#project-toolbar',
@@ -57,8 +269,8 @@
                 },{
                     field:'description',
                     align:'center',
-                    title:'类型',
-                    formatter:typeparse
+                    title:'描述',
+                    formatter:descparse
                 },{
                     field:'status',
                     align:'center',
@@ -72,6 +284,31 @@
                 data: lst
             });
         }
+
+        function descparse(value, row, index) {
+            if(value.length >= 13){
+                return value.substr(0,10)+"...";
+            }
+            return value;
+        }
+        function qualityparse(value, row, index) {
+            if(value<=0){
+                return '<span class="label label-default">粗糙</span>';
+            }else if(value<=20){
+                return '<span class="label label-success">优秀</span>';
+            }else if(value<=40){
+                return '<span class="label label-info">精良</span>';
+            }else if(value<=60){
+                return '<span class="label label-purple">稀有</span>';
+            }else if(value<=80){
+                return '<span class="label label-warning">史诗</span>';
+            }else if(value<=100){
+                return '<span class="label label-danger">神话</span>';
+            }
+        }
+        function progressparse(value, row, index) {
+            return value+"%"
+        }
         function typeparse(value, row, index) {
             if(row.type=='sm')return '小型';
             else if(row.type=='md')return'中型';
@@ -83,13 +320,155 @@
             else  return'已完成';
         }
         function operatorbtn(value,row,index) {
-            if(row.report==-1){
-                return '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >撰写报告</button>'
+            if(row.reportid==-1){
+                return '<button class="btn btn-sm btn-success mar-rgt" onclick="createReportModal(' + index + ')" >撰写报告</button>'
             }else{
-                return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.report + ')" >编辑报告</button>'
+                return '<button class="btn btn-sm btn-primary mar-rgt" onclick="alertReportModal(' + index + ')" >编辑报告</button>'
             }
         }
+        function operatorbtn2(value,row,index) {
+            return '<button class="btn btn-sm btn-primary mar-rgt" onclick="alertReportModal2(' + row.id + ')" >编辑报告</button>'
+        }
+        function createReportModal(index) {
+            selectedIndex = index;
+            var item = list[index];
+            $("#proj-name").val(item.name);
+            $("#report-time").html("创建");
+            $("#submit-btn").html("新建报告");
+            rs_def.noUiSlider.updateOptions({
+                start   : [ 0 ]
+            });
+            rs_step.noUiSlider.updateOptions({
+                start   : [ 0 ]
+            });
+            $('#add-modal').modal('show');
+
+        }
+        function alertReportModal(index) {
+            selectedIndex = index;
+            var item = list[index];
+            $("#submit-btn").html("更新报告");
+            $("#proj-name").val(item.name);
+            $.ajax({
+                type:"POST",
+                url:"/getReport",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify({"id":item.reportid}),
+                success:function (data) {
+                    console.log(data);
+                    $("#report-time").html(data.updatetime);
+                    rs_def.noUiSlider.updateOptions({
+                        start   : [ data.progress ]
+                    });
+                    rs_step.noUiSlider.updateOptions({
+                        start   : [ data.quality ]
+                    });
+                    $("#report-desc").val(data.description);
+                    $("#report-title").val(data.title);
+                }
+            });
+
+            $('#add-modal').modal('show');
+
+        }
+        function alertReportModal2(id) {
+            $("#submit-btn").html("更新报告");
+            $("#proj-name").val("");
+            $.ajax({
+                type:"POST",
+                url:"/getReport",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify({"id":id}),
+                success:function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/getproj",
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({"id": data.projectid}),
+                        success:function (da) {
+                            $("#proj-name").val(da.name);
+                        }
+                    });
+                    $("#report-time").html(data.updatetime);
+                    rs_def.noUiSlider.updateOptions({
+                        start   : [ data.progress ]
+                    });
+                    rs_step.noUiSlider.updateOptions({
+                        start   : [ data.quality ]
+                    });
+                    $("#report-desc").val(data.description);
+                    $("#report-title").val(data.title);
+                }
+            });
+
+            $('#add-modal').modal('show');
+
+        }
+/*
+    private String title;
+    private String updatetime;
+    private String description;
+    private String quality; //项目质量
+    private int number;//项目人数
+    private Long projectid;
+    private int progress;//进度
+ */
+        function updateReport() {
+            var item = list[selectedIndex];
+            var report={
+                "id":item.reportid===-1?-1:item.reportid,
+                "title":$("#report-title").val(),
+                "updatetime":"-1",
+                "description":$("#report-desc").val(),
+                "quality":parseInt(quality),
+                "progress": parseInt(progress),
+                "projectid":item.id
+            }
+            console.log(report);
+            //updateReport
+
+            $.ajax({
+                type:"POST",
+                url:"/updateReport",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify(report),
+                success:function (data) {
+                    if(data==="success"){
+                        $.niftyNoty({
+                            type: 'success',
+                            container : 'floating',
+                            title : '成功更新了报告',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myreport";
+                            }
+                        });
+                    }else{
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '更新失败',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myreport";
+                            }
+                        });
+                    }
+                }
+            });
+
+
+        }
+
+
+
     </script>
+    
+    
 
 </div>
 
