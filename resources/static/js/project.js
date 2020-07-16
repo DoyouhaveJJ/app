@@ -283,13 +283,17 @@ function addProj() {
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify(proj),
             success: function (data) {
+                console.log(data);
                 if (data == "success") {
                     $.niftyNoty({
                         type: 'success',
                         container: 'floating',
                         title: '新建成功',
                         closeBtn: true,
-                        timer: 1000
+                        timer: 1000,
+                        onHidden:function () {
+                            window.location.href="/project";
+                        }
                     });
                 } else {
                     $.niftyNoty({
@@ -298,6 +302,9 @@ function addProj() {
                         title: '新建失败,存在同名项目',
                         closeBtn: true,
                         timer: 1000,
+                        onHidden:function () {
+                            window.location.href="/project";
+                        }
                     });
                 }
             }
@@ -310,6 +317,9 @@ function addProj() {
             message: '',
             closeBtn: true,
             timer: 1000,
+            onHidden:function () {
+                window.location.href="/project";
+            }
         });
     }
 

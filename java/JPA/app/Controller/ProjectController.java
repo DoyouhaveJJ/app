@@ -61,7 +61,7 @@ public class ProjectController
     public String addNewProj(@RequestBody Project proj, HttpSession httpSession){
         Project temp=projectRepository.findByName(proj.getName());
         User user=(User)httpSession.getAttribute("user");
-        if(temp==null && user.getRole()!=0){
+        if(temp==null && user!=null && user.getRole()!=0){
             proj.setCreaterId(user.getId());
             proj.setStatus(0);
             System.out.println(proj.getName());
@@ -133,5 +133,17 @@ public class ProjectController
             return "success";
         }
         return "failure";
+    }
+
+    @RequestMapping(value = "/getmyprojlst")
+    @ResponseBody
+    public JSONArray getmyprojlst(HttpSession httpSession){
+        User user=(User)httpSession.getAttribute("user");
+        if(user!=null){
+            List<Project> projLst=projectRepository.findByCreaterId(user.getId());
+            JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(projLst));
+            return jsonArray;
+        }
+        return null;
     }
 }
