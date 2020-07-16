@@ -1,74 +1,153 @@
-let creaters=[];
+let creaters = [];
 $.ajax({
-    type:'get',
-    async:false,
-    url:'/getCreater',
-    success:function (data) {
-        creaters=data;
+    type: 'get',
+    async: false,
+    url: '/getCreater',
+    success: function (data) {
+        creaters = data;
     }
 });
 
 function getcreater(value, row, index) {
     return creaters[row.createrId.toString()];
 }
+
 function typeparse(value, row, index) {
-    if(row.type=='sm')return '小型';
-    else if(row.type=='md')return'中型';
-    else  return'大型';
+    if (row.type == 'sm') return '小型';
+    else if (row.type == 'md') return '中型';
+    else return '大型';
 }
+
 function statusparse(value, row, index) {
-    if(row.status==0)return '未启动';
-    else if(row.status==1)return '未完成';
-    else  return'已完成';
+    if (row.status == 0) return '未启动';
+    else if (row.status == 1) return '未完成';
+    else return '已完成';
 }
-function operatorbtn(value,row,index) {
-    return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.id + ')" >详细</button>'+
-        '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >修改</button>';
+
+function operatorbtn(value, row, index) {
+    let forced = "";
+    if (row.status == 0) {
+        forced = '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_start(' + row.id + ')" >强制启动</button>';
+    } else if (row.status == 1) {
+        forced = '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_end(' + row.id + ')" >强制完成</button>';
+    }else if(row.status==2){
+        forced = '<button class="btn btn-sm btn-danger mar-rgt" onclick="force_del(' + row.id + ')" >删除记录</button>';
+    }
+    return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.id + ')" >详细</button>' +
+        '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >修改</button>' + forced;
 }
-function turnAlter(id) {
-    let proj={
-        "id":id
+
+
+
+function force_start(id) {
+    let proj = {
+        "id": id
     };
     $.ajax({
-        type:'post',
-        contentType:'application/json;charset=UTF-8',
-        url:'/getproj',
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/forcestart',
         data: JSON.stringify(proj),
-        success:function (data) {
+        success: function (data) {
+            if (data == 'success') {
+                $.niftyNoty({
+                    type: 'success',
+                    container: 'floating',
+                    title: '启动成功',
+                    closeBtn: true,
+                    timer: 1000
+                });
+            } else {
+                $.niftyNoty({
+                    type: 'danger',
+                    container: 'floating',
+                    title: '启动失败',
+                    closeBtn: true,
+                    timer: 1000
+                });
+            }
+        }
+    });
+}
+
+function force_end(id) {
+    let proj = {
+        "id": id
+    };
+    $.ajax({
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/forceend',
+        data: JSON.stringify(proj),
+        success: function (data) {
+            if (data == 'success') {
+                $.niftyNoty({
+                    type: 'success',
+                    container: 'floating',
+                    title: '完成成功',
+                    closeBtn: true,
+                    timer: 1000
+                });
+            } else {
+                $.niftyNoty({
+                    type: 'danger',
+                    container: 'floating',
+                    title: '完成失败',
+                    closeBtn: true,
+                    timer: 1000
+                });
+            }
+        }
+    });
+}
+
+function turnAlter(id) {
+    let proj = {
+        "id": id
+    };
+
+
+    $.ajax({
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/getproj',
+        data: JSON.stringify(proj),
+        success: function (data) {
             console.log(data);
             $('#alter-name').val(data.name);
             $('#alter-desc').val(data.description);
-            let arr=data.tech.split(';');
+            let arr = data.tech.split(';');
             console.log(arr);
-            for(let x of arr){
+            for (let x of arr) {
                 console.log(x);
-                if(x=='c/c++')$('#alter-tech-1').attr("checked",true);
-                else if(x=='java')$('#alter-tech-2').attr("checked",true);
-                else if(x=='.net')$('#alter-tech-3').attr("checked",true);
-                else if(x=='python')$('#alter-tech-4').attr('checked',true);
+                if (x == 'c/c++') $('#alter-tech-1').attr("checked", true);
+                else if (x == 'java') $('#alter-tech-2').attr("checked", true);
+                else if (x == '.net') $('#alter-tech-3').attr("checked", true);
+                else if (x == 'python') $('#alter-tech-4').attr('checked', true);
             }
-            if(data.type=='sm')$('#alter-type-1').attr('checked',true);
-            else if(data.type=='md')$('#alter-type-2').attr('checked',true);
-            else if(data.type=='lg')$('#alter-type-3').attr('checked',true);
+            if (data.type == 'sm') $('#alter-type-1').attr('checked', true);
+            else if (data.type == 'md') $('#alter-type-2').attr('checked', true);
+            else if (data.type == 'lg') $('#alter-type-3').attr('checked', true);
         }
     });
     $('#alter-modal').modal('show');
 }
+
 function turnCheck(id) {
-    let proj={
-        "id":id
+    let proj = {
+        "id": id
     };
     $.ajax({
-        type:'post',
-        contentType:'application/json;charset=UTF-8',
-        url:'/getproj',
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/getproj',
         data: JSON.stringify(proj),
-        success:function (data) {
+        success: function (data) {
             console.log(data);
             $('#more-name').text(data.name);
             $('#more-creater').text(creaters[data.createrId.toString()]);
-            $('#more-start').text(data.end);
-            $('#more-end').text(data.start);
+            $('#more-start').text(data.start);
+            $('#more-end').text(data.end);
             $('#more-desc').text(data.description);
             $('#more-tech').text(data.tech);
         }
@@ -79,50 +158,52 @@ function turnCheck(id) {
 function getProjLst() {
 
     $.ajax({
-        type:"get",
-        url:"/getprojlst",
-        success:function (lst) {
+        type: "get",
+        url: "/getprojlst",
+        success: function (lst) {
             initProjTable(lst);
         }
 
     });
 }
 
-function initProjTable(lst){
+function initProjTable(lst) {
     $('#project-table').bootstrapTable({
         toolbar: '#project-toolbar',
         pageSize: 5,
         pageList: [5, 10, 15],
         pagination: 'true',
         search: 'true',
-        columns:[{
-            field:'name',
-            align:'center',
-            title:'项目名'
-        },{
-            field:'createrId',
-            align:'center',
-            title:'负责人',
-            formatter:getcreater
-        },{
-            field:'type',
-            align:'center',
-            title:'类型',
-            formatter:typeparse
-        },{
-            field:'status',
-            align:'center',
-            title:'状态',
-            formatter:statusparse
-        },{
-            align:'center',
-            title:'操作',
-            formatter:operatorbtn
+        columns: [{
+            field: 'name',
+            align: 'center',
+            title: '项目名'
+        }, {
+            field: 'createrId',
+            align: 'center',
+            title: '负责人',
+            formatter: getcreater
+        }, {
+            field: 'type',
+            align: 'center',
+            title: '类型',
+            formatter: typeparse
+        }, {
+            field: 'status',
+            align: 'center',
+            title: '状态',
+            formatter: statusparse
+        }, {
+            align: 'center',
+            title: '操作',
+            formatter: operatorbtn
         }],
         data: lst
     });
 }
+
 self.getProjLst();
+
 function addProj() {
     let proj = {
         "name": "",
@@ -152,7 +233,7 @@ function addProj() {
         $.ajax({
             type: "POST",
             url: "/addNewProj",
-            contentType:'application/json;charset=UTF-8',
+            contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify(proj),
             success: function (data) {
                 if (data == "success") {
@@ -174,7 +255,7 @@ function addProj() {
                 }
             }
         });
-    }else {
+    } else {
         $.niftyNoty({
             type: 'danger',
             container: 'floating',
