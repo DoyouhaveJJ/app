@@ -37,7 +37,42 @@ function operatorbtn(value, row, index) {
         '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >修改</button>' + forced;
 }
 
-
+function force_del(id) {
+    let proj = {
+        "id": id
+    };
+    $.ajax({
+        type: 'post',
+        contentType: 'application/json;charset=UTF-8',
+        url: '/forcedel',
+        data: JSON.stringify(proj),
+        success: function (data) {
+            if (data == 'success') {
+                $.niftyNoty({
+                    type: 'success',
+                    container: 'floating',
+                    title: '删除成功',
+                    closeBtn: true,
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
+                });
+            } else {
+                $.niftyNoty({
+                    type: 'danger',
+                    container: 'floating',
+                    title: '删除失败',
+                    closeBtn: true,
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
+                });
+            }
+        }
+    });
+}
 
 function force_start(id) {
     let proj = {
@@ -55,7 +90,10 @@ function force_start(id) {
                     container: 'floating',
                     title: '启动成功',
                     closeBtn: true,
-                    timer: 1000
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
                 });
             } else {
                 $.niftyNoty({
@@ -63,7 +101,10 @@ function force_start(id) {
                     container: 'floating',
                     title: '启动失败',
                     closeBtn: true,
-                    timer: 1000
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
                 });
             }
         }
@@ -86,7 +127,10 @@ function force_end(id) {
                     container: 'floating',
                     title: '完成成功',
                     closeBtn: true,
-                    timer: 1000
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
                 });
             } else {
                 $.niftyNoty({
@@ -94,7 +138,10 @@ function force_end(id) {
                     container: 'floating',
                     title: '完成失败',
                     closeBtn: true,
-                    timer: 1000
+                    timer: 1000,
+                    onHidden:function () {
+                        window.location.href="/project";
+                    }
                 });
             }
         }

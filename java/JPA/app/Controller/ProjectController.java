@@ -122,4 +122,16 @@ public class ProjectController
         }
         return "failure";
     }
+
+    @RequestMapping(value = "/forcedel")
+    @ResponseBody
+    public String forcedel(@RequestBody Project proj){
+        long id=proj.getId();
+        Project temp = projectRepository.findById(id);
+        if(temp.getStatus()==2 && temp!=null){
+            projectRepository.delete(temp);
+            return "success";
+        }
+        return "failure";
+    }
 }
