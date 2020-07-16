@@ -146,4 +146,33 @@ public class ProjectController
         }
         return null;
     }
+
+    @RequestMapping(value = "/myproject")
+    public String myproject(){return "main/project/myproject";}
+    @RequestMapping(value = "/addproject")
+    public String addproject(){return "main/project/addproject";}
+    @RequestMapping(value = "/alterProj")
+    @ResponseBody
+    public String alterProj(@RequestBody Project proj,HttpSession httpSession){
+        long id=proj.getId();
+        Project temp=projectRepository.findById(id);
+        User user=(User)httpSession.getAttribute("user");
+        if(temp!=null && user!=null && user.getRole()!=0){
+            System.out.println("修改id"+proj.getId());
+            temp.setName(proj.getName());
+            temp.setTech(proj.getTech());
+            temp.setDescription(proj.getDescription());
+            temp.setType(proj.getType());
+            projectRepository.save(temp);
+            return "success";
+        }
+        return "failure";
+    }
+    @RequestMapping(value = "/getprojname")
+    @ResponseBody
+    public String getprojname(HttpSession httpSession){
+        long id=(long)httpSession.getAttribute("projectid");
+        Project proj=projectRepository.findById(id);
+        return proj.getName();
+    }
 }

@@ -284,7 +284,7 @@ function addProj() {
             data: JSON.stringify(proj),
             success: function (data) {
                 console.log(data);
-                if (data == "success") {
+                if (data ==="success") {
                     $.niftyNoty({
                         type: 'success',
                         container: 'floating',
@@ -295,7 +295,7 @@ function addProj() {
                             window.location.href="/project";
                         }
                     });
-                } else {
+                } else if(data==="failure") {
                     $.niftyNoty({
                         type: 'danger',
                         container: 'floating',
@@ -323,4 +323,78 @@ function addProj() {
         });
     }
 
+}
+function alterProj() {
+    let proj = {
+        "id":-1,
+        "name": "",
+        "type": "",
+        "tech": "",
+        "description": ""
+    };
+    proj.id=$('#alter-id').val();
+    let flag = true;
+    proj.name = $('#alter-name').val();
+    proj.description = $('#alter-desc').val();
+    if (proj.name != "") {
+        flag = false;
+    }
+    if (proj.description != "") {
+        flag = false;
+    }
+    $("input[name='alter-type']:checked").each(function () {
+        proj.type = $(this).val();
+        flag = false;
+    });
+    $("input[name='alter-tech']:checked").each(function () {
+        proj.tech += $(this).val() + ';';
+        flag = false;
+    });
+
+    if (!flag) {
+        $.ajax({
+            type: "POST",
+            url: "/alterProj",
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(proj),
+            success: function (data) {
+                console.log(data);
+                if (data ==="success") {
+                    $.niftyNoty({
+                        type: 'success',
+                        container: 'floating',
+                        title: '修改成功',
+                        closeBtn: true,
+                        timer: 1000,
+                        onHidden:function () {
+                            window.location.href="/project";
+                        }
+                    });
+                } else if(data==="failure") {
+                    $.niftyNoty({
+                        type: 'danger',
+                        container: 'floating',
+                        title: '修改失败',
+                        closeBtn: true,
+                        timer: 1000,
+                        onHidden:function () {
+                            window.location.href="/project";
+                        }
+                    });
+                }
+            }
+        });
+    } else {
+        $.niftyNoty({
+            type: 'danger',
+            container: 'floating',
+            title: '修改失败',
+            message: '',
+            closeBtn: true,
+            timer: 1000,
+            onHidden:function () {
+                window.location.href="/project";
+            }
+        });
+    }
 }

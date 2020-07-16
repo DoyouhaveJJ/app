@@ -1,0 +1,37 @@
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="templetes/layout.html">
+
+<head>
+    <title>项目</title>
+    <link href="/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+</head>
+
+
+<div layout:fragment="content">
+
+
+    <div class="col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    添加成员
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div id="project-toolbar">
+                    <label class="label label-success text-2x" id="proj-name"></label>
+                </div>
+                <table id="member-table">
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/team.js"></script>
+</div>
+
+

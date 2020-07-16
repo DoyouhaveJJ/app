@@ -1,0 +1,91 @@
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="templetes/layout.html">
+
+<head>
+    <title>项目</title>
+    <link href="/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+</head>
+
+
+<div layout:fragment="content">
+
+
+    <div class="col-lg-10 col-lg-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    新建我的项目
+                </h4>
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="proj-name">项目名</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" id="proj-name" placeholder="项目名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">类别</label>
+                        <div class="col-sm-9">
+                            <div class="radio">
+                                <input id="type-radio-1" class="magic-radio" type="radio" name="proj-type" value="sm">
+                                <label for="type-radio-1">小型</label>
+                            </div>
+                            <div class="radio">
+                                <input id="type-radio-2" class="magic-radio" type="radio" name="proj-type" value="md">
+                                <label for="type-radio-2">中型</label>
+                            </div>
+                            <div class="radio">
+                                <input id="type-radio-3" class="magic-radio" type="radio" name="proj-type" value="lg">
+                                <label for="type-radio-3">大型</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">技术</label>
+                        <div class="col-sm-9">
+                            <div class="checkbox">
+                                <input type="checkbox" class="magic-checkbox" id="proj-tech-1" name="proj-tech"
+                                       value="c/c++">
+                                <label for="proj-tech-1">C/C++</label>
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" class="magic-checkbox" id="proj-tech-2" name="proj-tech"
+                                       value="java">
+                                <label for="proj-tech-2">Java</label>
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" class="magic-checkbox" id="proj-tech-3" name="proj-tech"
+                                       value=".net">
+                                <label for="proj-tech-3">.Net</label>
+                            </div>
+                            <div class="checkbox">
+                                <input type="checkbox" class="magic-checkbox" id="proj-tech-4" name="proj-tech"
+                                       value="python">
+                                <label for="proj-tech-4">Python</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">描述</label>
+                        <div class="col-sm-9">
+                            <textarea placeholder="描述" rows="5" class="form-control" id="proj-desc"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-sm-offset-10 col-sm-2">
+                        <button class="btn btn-success" onclick="addProj();" type="button">新建</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script src="/js/myproject.js"></script>
+</div>
+
+
