@@ -58,14 +58,24 @@ public class ReportController {
         return jsonArray;
     }
 
+    @RequestMapping(value = "/getMyReport" ,method = RequestMethod.POST)
+    @ResponseBody
+    public JSONArray getMyR(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Report> reportList = reportRepository.findAllByCreaterid(u.getId());
+        return JSON.parseArray(JSON.toJSONString(reportList));
+    }
+
     @RequestMapping(value = "/getReport",method = RequestMethod.POST)
     @ResponseBody
     public JSONObject getReport(@RequestBody Report r){
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
-
         Report report = reportRepository.findFirstById(r.getId());
         return JSON.parseObject(JSON.toJSONString(report));
     }
+
 
     @RequestMapping(value = "/updateReport" ,method = RequestMethod.POST)
     @ResponseBody
@@ -75,7 +85,7 @@ public class ReportController {
             return "failure";
         }
         r.setUpdatetime(LocalDateTime.now().toString());
-        System.out.println(u.getName()+r.getId());
+        r.setCreaterid(u.getId());
         try{
             reportRepository.save(r);
         }catch (Exception e){

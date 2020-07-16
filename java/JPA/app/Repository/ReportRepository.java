@@ -11,4 +11,5 @@ public interface ReportRepository extends JpaRepository<Report,Long>
     List<Report> findAll();
     Report findFirstById(long id);
     Report findFirstByProjectid(long id);
+    List<Report> findAllByCreaterid(long id);
 }

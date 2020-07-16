@@ -36,6 +36,16 @@ public class Report implements Serializable {
     private Long projectid;
     @Column
     private int progress;//进度
+    @Column
+    private Long createrid;
+
+    public Long getCreaterid() {
+        return createrid;
+    }
+
+    public void setCreaterid(Long createrid) {
+        this.createrid = createrid;
+    }
 
     public Long getProjectid() {
         return projectid;

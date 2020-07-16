@@ -87,7 +87,20 @@
     <div class="panel">
         <div class="panel-heading">
             <h4 class="panel-title">
-                项目列表
+                我的报告列表
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div id="report-toolbar">
+            </div>
+            <table id="report-table">
+            </table>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                我的项目列表
             </h4>
         </div>
         <div class="panel-body">
@@ -99,8 +112,12 @@
             </table>
         </div>
     </div>
+
+
+
     <script>
         getProjLst();
+        getRepLst();
         var list;
         var selectedIndex,quality,progress;
         var rs_def = document.getElementById("report-progress");
@@ -151,7 +168,8 @@
 
         function getProjLst() {
             $.ajax({
-                type:"get",
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
                 url:"/getProjWithReport",
                 success:function (lst) {
                     if(lst == ""){
@@ -172,7 +190,66 @@
                 }
             });
         }
+        function getRepLst() {
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getMyReport",
+                success:function (lst) {
+                    if(lst == ""){
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '请先登录',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000
+                        });
+                    }else{
+                        initRepTable(lst);
+                    }
 
+                }
+            });
+        }
+        function initRepTable(lst){
+            $('#report-table').bootstrapTable({
+                toolbar: '#report-toolbar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: 'true',
+                search: 'true',
+                columns:[{
+                    field:'title',
+                    align:'center',
+                    title:'报告标题'
+                },{
+                    field:'description',
+                    align:'center',
+                    title:'内容',
+                    formatter:descparse
+                },{
+                    field:'quality',
+                    align:'center',
+                    title:'质量',
+                    formatter:qualityparse
+                },{
+                    field:'progress',
+                    align:'center',
+                    title:'进度',
+                    formatter:progressparse
+                },{
+                    field:'updatetime',
+                    align:'center',
+                    title:'上一次更新时间'
+                },{
+                    align:'center',
+                    title:'操作',
+                    formatter:operatorbtn
+                }],
+                data: lst
+            });
+        }
         function initProjTable(lst){
             $('#project-table').bootstrapTable({
                 toolbar: '#project-toolbar',
@@ -192,8 +269,8 @@
                 },{
                     field:'description',
                     align:'center',
-                    title:'类型',
-                    formatter:typeparse
+                    title:'描述',
+                    formatter:descparse
                 },{
                     field:'status',
                     align:'center',
@@ -206,6 +283,31 @@
                 }],
                 data: lst
             });
+        }
+
+        function descparse(value, row, index) {
+            if(value.length >= 13){
+                return value.substr(0,10)+"...";
+            }
+            return value;
+        }
+        function qualityparse(value, row, index) {
+            if(value<=0){
+                return '<span class="label label-default">粗糙</span>';
+            }else if(value<=20){
+                return '<span class="label label-success">优秀</span>';
+            }else if(value<=40){
+                return '<span class="label label-info">精良</span>';
+            }else if(value<=60){
+                return '<span class="label label-purple">稀有</span>';
+            }else if(value<=80){
+                return '<span class="label label-warning">史诗</span>';
+            }else if(value<=100){
+                return '<span class="label label-danger">神话</span>';
+            }
+        }
+        function progressparse(value, row, index) {
+            return value+"%"
         }
         function typeparse(value, row, index) {
             if(row.type=='sm')return '小型';
@@ -224,8 +326,9 @@
                 return '<button class="btn btn-sm btn-primary mar-rgt" onclick="alertReportModal(' + index + ')" >编辑报告</button>'
             }
         }
-        
-        
+        function operatorbtn2(value,row,index) {
+            return '<button class="btn btn-sm btn-primary mar-rgt" onclick="alertReportModal2(' + row.id + ')" >编辑报告</button>'
+        }
         function createReportModal(index) {
             selectedIndex = index;
             var item = list[index];
@@ -253,6 +356,39 @@
                 data:JSON.stringify({"id":item.reportid}),
                 success:function (data) {
                     console.log(data);
+                    $("#report-time").html(data.updatetime);
+                    rs_def.noUiSlider.updateOptions({
+                        start   : [ data.progress ]
+                    });
+                    rs_step.noUiSlider.updateOptions({
+                        start   : [ data.quality ]
+                    });
+                    $("#report-desc").val(data.description);
+                    $("#report-title").val(data.title);
+                }
+            });
+
+            $('#add-modal').modal('show');
+
+        }
+        function alertReportModal2(id) {
+            $("#submit-btn").html("更新报告");
+            $("#proj-name").val("");
+            $.ajax({
+                type:"POST",
+                url:"/getReport",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify({"id":id}),
+                success:function (data) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/getproj",
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({"id": data.projectid}),
+                        success:function (da) {
+                            $("#proj-name").val(da.name);
+                        }
+                    });
                     $("#report-time").html(data.updatetime);
                     rs_def.noUiSlider.updateOptions({
                         start   : [ data.progress ]
