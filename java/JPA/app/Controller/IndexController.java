@@ -16,9 +16,14 @@ import javax.servlet.http.HttpSession;
 public class IndexController {
     //fucker
     @RequestMapping(value = "/myself")
-    public String AddAI()
+    public String Myself()
     {
         return "main/myself";
+    }
+    @RequestMapping(value = "/myreport")
+    public String MyReport()
+    {
+        return "business/myreport";
     }
 
 }

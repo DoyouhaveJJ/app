@@ -642,6 +642,12 @@
                                         <span class="menu-title">外包项目管理</span>
                                     </a>
                                 </li>
+                                <li class="link" th:if="${session.user.getRole()==1}">
+                                    <a th:href="@{/myreport}">
+                                        <i class="pli-quill-2"></i>
+                                        <span class="menu-title">我的项目报告</span>
+                                    </a>
+                                </li>
                                 <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==0}">
                                     <a th:href="@{/#}">

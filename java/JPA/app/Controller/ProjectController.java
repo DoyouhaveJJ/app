@@ -3,6 +3,7 @@ package JPA.app.Controller;
 import JPA.app.Entity.Project;
 import JPA.app.Entity.User;
 import JPA.app.Repository.ProjectRepository;
+import JPA.app.Repository.ReportRepository;
 import JPA.app.Repository.UserRepository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -29,6 +30,7 @@ public class ProjectController
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
+
 
     @RequestMapping(value = "/project")
     public String index(){
@@ -90,8 +92,10 @@ public class ProjectController
         json.put("tech",temp.getTech());
         json.put("type",temp.getType());
         json.put("description",temp.getDescription());
-
         return json;
 
     }
+
+
+
 }

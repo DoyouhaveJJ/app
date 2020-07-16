@@ -27,13 +27,15 @@ public class Report implements Serializable {
     @Column
     private String updatetime;
     @Column
-    private String describe;
+    private String description;
     @Column
     private String quality; //项目质量
     @Column
     private int number;//项目人数
     @Column
     private Long projectid;
+    @Column
+    private int progress;//进度
 
     public Long getProjectid() {
         return projectid;
@@ -67,12 +69,12 @@ public class Report implements Serializable {
         this.updatetime = updatetime;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getQuality() {
@@ -99,7 +101,6 @@ public class Report implements Serializable {
         this.progress = progress;
     }
 
-    @Column
-    private int progress;//进度
+
 
 }

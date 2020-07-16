@@ -11,101 +11,86 @@
 
 
 <div layout:fragment="content">
-
-
-    <div class="col-lg-10 col-lg-offset-1">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    报告列表
-                </h4>
-            </div>
-            <div class="panel-body">
-                <div id="project-toolbar">
-                    <button class="btn btn-success" data-target="#add-modal" data-toggle="modal"><i class="pli-add"></i> | 添加</button>
-                </div>
-                <table id="project-table">
-
-                </table>
-            </div>
-        </div>
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            项目列表
+        </h4>
     </div>
-    <div class="modal fade" id="add-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
+    <div class="panel-body">
+        <div id="project-toolbar">
 
-                <!--Modal header-->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
-                    <h4 class="modal-title">新建报告</h4>
-                </div>
-
-                <!--Modal body-->
-                <form class="form-horizontal">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label" for="proj-name">报告名</label>
-                            <div class="col-sm-9">
-                                <input class="form-control" type="text" id="proj-name" placeholder="项目名">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">项目名 </label>
-                            <div class="col-sm-9">
-                                <div class="radio">
-                                    <input id="type-radio-1" class="magic-radio" type="radio" name="proj-type" value="sm">
-                                    <label for="type-radio-1">小型</label>
-                                </div>
-                                <div class="radio">
-                                    <input id="type-radio-2" class="magic-radio" type="radio" name="proj-type" value="md">
-                                    <label for="type-radio-2">中型</label>
-                                </div>
-                                <div class="radio">
-                                    <input id="type-radio-3" class="magic-radio" type="radio" name="proj-type" value="lg">
-                                    <label for="type-radio-3">大型</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">技术</label>
-                            <div class="col-sm-9">
-                                <div class="checkbox">
-                                    <input type="checkbox" class="magic-checkbox" id="proj-tech-1" name="proj-tech" value="c/c++">
-                                    <label for="proj-tech-1">C/C++</label>
-                                </div>
-                                <div class="checkbox">
-                                    <input type="checkbox" class="magic-checkbox" id="proj-tech-2"  name="proj-tech" value="java">
-                                    <label for="proj-tech-2">Java</label>
-                                </div>
-                                <div class="checkbox">
-                                    <input type="checkbox" class="magic-checkbox" id="proj-tech-3"  name="proj-tech" value=".net">
-                                    <label for="proj-tech-3">.Net</label>
-                                </div>
-                                <div class="checkbox">
-                                    <input type="checkbox" class="magic-checkbox" id="proj-tech-4" name="proj-tech"  value="python">
-                                    <label for="proj-tech-4">Python</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 control-label">描述</label>
-                            <div class="col-sm-9">
-                                <textarea placeholder="描述" rows="5" class="form-control"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary col-sm-2">新建</button>
-                    </div>
-                </form>
-
-
-                <!--Modal footer-->
-
-            </div>
         </div>
+        <table id="project-table">
+
+        </table>
     </div>
-    <script src="/js/project.js"></script>
+    <script>
+        getProjLst();
+
+        function getProjLst() {
+            $.ajax({
+                type:"get",
+                url:"/getProjWithReport",
+                success:function (lst) {
+                    console.log(lst);
+                    initProjTable(lst);
+                }
+            });
+        }
+
+        function initProjTable(lst){
+            $('#project-table').bootstrapTable({
+                toolbar: '#project-toolbar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: 'true',
+                search: 'true',
+                columns:[{
+                    field:'name',
+                    align:'center',
+                    title:'项目名'
+                },{
+                    field:'type',
+                    align:'center',
+                    title:'类型',
+                    formatter:typeparse
+                },{
+                    field:'description',
+                    align:'center',
+                    title:'类型',
+                    formatter:typeparse
+                },{
+                    field:'status',
+                    align:'center',
+                    title:'状态',
+                    formatter:statusparse
+                },{
+                    align:'center',
+                    title:'操作',
+                    formatter:operatorbtn
+                }],
+                data: lst
+            });
+        }
+        function typeparse(value, row, index) {
+            if(row.type=='sm')return '小型';
+            else if(row.type=='md')return'中型';
+            else  return'大型';
+        }
+        function statusparse(value, row, index) {
+            if(row.status==0)return '未启动';
+            else if(row.status==1)return '未完成';
+            else  return'已完成';
+        }
+        function operatorbtn(value,row,index) {
+            if(row.report==-1){
+                return '<button class="btn btn-sm btn-success mar-rgt" onclick="turnAlter(' + row.id + ')" >撰写报告</button>'
+            }else{
+                return '<button class="btn btn-sm btn-primary mar-rgt" onclick="turnCheck(' + row.report + ')" >编辑报告</button>'
+            }
+        }
+    </script>
+
 </div>
 
 
