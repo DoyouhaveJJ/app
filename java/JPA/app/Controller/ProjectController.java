@@ -3,7 +3,6 @@ package JPA.app.Controller;
 import JPA.app.Entity.Project;
 import JPA.app.Entity.User;
 import JPA.app.Repository.ProjectRepository;
-import JPA.app.Repository.ReportRepository;
 import JPA.app.Repository.UserRepository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -30,7 +29,6 @@ public class ProjectController
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
-
 
     @RequestMapping(value = "/project")
     public String index(){
@@ -80,22 +78,60 @@ public class ProjectController
         System.out.println(proj.getId());
         Project temp = projectRepository.findById(id);
         JSONObject json=new JSONObject();
-        SimpleDateFormat sdf =new SimpleDateFormat( " yyyy-MM-dd" );
+        SimpleDateFormat sdf =new SimpleDateFormat( "yyyy-MM-dd" );
         json.put("name",temp.getName());
         json.put("createrId",temp.getCreaterId());
         if(temp.getStart()!=null){
             json.put("start",sdf.format(temp.getStart()));
         }else json.put("start","未开始");
-        if(temp.getStart()!=null){
+        if(temp.getEnd()!=null){
             json.put("end",sdf.format(temp.getEnd()));
         }else json.put("end","未结束");
         json.put("tech",temp.getTech());
+        json.put("status",temp.getStatus());
         json.put("type",temp.getType());
         json.put("description",temp.getDescription());
+
         return json;
 
     }
+    @RequestMapping(value = "/forcestart")
+    @ResponseBody
+    public String forcestart(@RequestBody Project proj){
+        long id=proj.getId();
+        Project temp = projectRepository.findById(id);
+        if(temp.getStatus()==0 && temp!=null){
+            temp.setStart(new Date());
+            temp.setStatus(1);
+            projectRepository.save(temp);
+            return "success";
+        }
+        return "failure";
+    }
 
+    @RequestMapping(value = "/forceend")
+    @ResponseBody
+    public String forceend(@RequestBody Project proj){
+        long id=proj.getId();
+        Project temp = projectRepository.findById(id);
+        if(temp.getStatus()==1 && temp!=null){
+            temp.setEnd(new Date());
+            temp.setStatus(2);
+            projectRepository.save(temp);
+            return "success";
+        }
+        return "failure";
+    }
 
-
+    @RequestMapping(value = "/forcedel")
+    @ResponseBody
+    public String forcedel(@RequestBody Project proj){
+        long id=proj.getId();
+        Project temp = projectRepository.findById(id);
+        if(temp.getStatus()==2 && temp!=null){
+            projectRepository.delete(temp);
+            return "success";
+        }
+        return "failure";
+    }
 }
