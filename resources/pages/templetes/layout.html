@@ -682,10 +682,10 @@
                                     </a>
                                 </li>
                                 <!--Menu list item-->
-                                <li class="link">
-                                    <a th:href="@{/#}">
+                                <li class="link" th:if="${session.user.getRole()==2}">
+                                    <a th:href="@{/excel}">
                                         <i class="pli-quill-2"></i>
-                                        <span class="menu-title">链接3</span>
+                                        <span class="menu-title">导出报表</span>
                                     </a>
                                 </li>
 
