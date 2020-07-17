@@ -648,6 +648,12 @@
                                         <span class="menu-title">我的项目报告</span>
                                     </a>
                                 </li>
+                                <li class="link" th:if="${session.user.getRole()==1}">
+                                    <a th:href="@{/myrisk}">
+                                        <i class="pli-quill-2"></i>
+                                        <span class="menu-title">我的风险管理</span>
+                                    </a>
+                                </li>
                                 <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==0}">
                                     <a th:href="@{/#}">

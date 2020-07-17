@@ -1,0 +1,532 @@
+<html lang="zh-CN"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="templetes/layout.html">
+
+<head>
+    <title>我的项目风险管理</title>
+    <link href="/plugins/bootstrap-table/bootstrap-table.css" rel="stylesheet">
+    <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+</head>
+
+
+<div layout:fragment="content">
+
+    <div class="modal fade" id="risk-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4 id="risk-title" class="modal-title">风险管理</h4>
+                </div>
+
+                <!--Modal body-->
+                <div class="panel-body">
+                    <div id="risk-toolbar">
+                        <button class="btn btn-sm btn-default mar-rgt" onclick="showModal2(-1)" >新增风险</button>
+                    </div>
+                    <table id="risk-table">
+                    </table>
+                </div>
+
+                <!--Modal footer-->
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="risk-modal2" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!--Modal header-->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="pci-cross pci-circle"></i></button>
+                    <h4  class="modal-title">风险编辑</h4>
+                </div>
+
+                <!--Modal body-->
+                <form class="panel-body form-horizontal form-padding">
+                    <!--Static-->
+                    <div class="form-group">
+                        <input type="hidden" disabled="disabled" id="risk-id" class="form-control">
+                        <label class="col-lg-2 control-label">负责人</label>
+                        <div class="col-lg-9 pad-no">
+                            <div class="clearfix">
+                                <div class="col-lg-4">
+                                    <div class="input-group mar-btm">
+                                        <div class="input-group-btn dropdown">
+                                            <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle" type="button">
+                                                选择负责人 <i class="dropdown-caret"></i>
+                                            </button>
+                                            <ul id="list_user" class="dropdown-menu">
+                                            </ul>
+                                        </div>
+                                        <input type="text" disabled="disabled" id="user-name" class="form-control">
+                                        <input type="hidden" disabled="disabled" id="user-id" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group pad-ver">
+                        <label class="col-md-2 control-label" for="risk-desc">风险描述</label>
+                        <div class="col-md-9">
+                            <textarea id="risk-desc" rows="9" class="form-control" placeholder="请输入你的描述内容.."></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group pad-ver">
+                        <label class="col-md-2 control-label">风险种类</label>
+                        <div class="col-md-9">
+                            <div class="radio">
+                                <input type="radio" class="magic-radio" id="type-0" name="type" value="0">
+                                <label for="type-0">已处理</label>
+
+                                <input type="radio" class="magic-radio" id="type-1" name="type" value="1">
+                                <label for="type-1">人员风险</label>
+
+                                <input type="radio" class="magic-radio" id="type-2" name="type" value="2">
+                                <label for="type-2">开发过程风险</label>
+
+                                <input type="radio" class="magic-radio" id="type-3" name="type" value="3">
+                                <label for="type-3">环境风险</label>
+
+                                <input type="radio" class="magic-radio" id="type-4" name="type" value="4">
+                                <label for="type-4">后勤风险</label>
+
+                                <input type="radio" class="magic-radio" id="type-5" name="type" value="5">
+                                <label for="type-5">需求风险</label>
+
+                                <input type="radio" class="magic-radio" id="type-6" name="type" value="6">
+                                <label for="type-6">进度风险</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group pad-ver">
+                        <label class="col-md-2 control-label">优先级</label>
+                        <div class="col-md-9">
+                            <div class="radio">
+                                <input type="radio" class="magic-radio" id="prior-0" name="prior" value="0">
+                                <label for="prior-0">不重要</label>
+
+                                <input type="radio" class="magic-radio" id="prior-1" name="prior" value="1">
+                                <label for="prior-1">低</label>
+
+                                <input type="radio" class="magic-radio" id="prior-2" name="prior" value="2">
+                                <label for="prior-2">中</label>
+
+                                <input type="radio" class="magic-radio" id="prior-3" name="prior" value="3">
+                                <label for="prior-3">高</label>
+
+                                <input type="radio" class="magic-radio" id="prior-4" name="prior" value="4">
+                                <label for="prior-4">紧急</label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary col-sm-2" type="button" onclick="submitRisk();" id="submit-btn">提交风险报告</button>
+                    </div>
+                </form>
+                <!--Modal footer-->
+
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                项目风险报告管理
+            </h4>
+        </div>
+        <div class="panel-body">
+            <div id="project-toolbar">
+            </div>
+            <table id="project-table">
+            </table>
+        </div>
+    </div>
+
+    <script>
+        getProjLst();
+        var selectedProjId;
+        var list;
+        var risklist;
+        function getProjLst() {
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getProjWithRisk",
+                success:function (lst) {
+                    if(lst == ""){
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '请先登录',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000
+                        });
+                    }else{
+                        console.log(lst);
+                        list = lst;
+                        initProjTable(lst);
+                    }
+
+                }
+            });
+        }
+        function initProjTable(lst){
+            $('#project-table').bootstrapTable({
+                toolbar: '#project-toolbar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: 'true',
+                search: 'true',
+
+                columns:[{
+                    field:'name',
+                    align:'center',
+                    title:'项目名'
+                },{
+                    field:'type',
+                    align:'center',
+                    title:'类型',
+                    formatter:typeparse
+                },{
+                    field:'description',
+                    align:'center',
+                    title:'描述',
+                    formatter:descparse
+                },{
+                    field:'status',
+                    align:'center',
+                    title:'状态',
+                    formatter:statusparse
+                },{
+                    field:'finished',
+                    align:'center',
+                    title:'已解决风险数',
+                    formatter:finished
+                },{
+                    field:'unfinished',
+                    align:'center',
+                    title:'未解决风险数',
+                    formatter:unfinished
+                },
+                    {
+                    align:'center',
+                    title:'操作',
+                    formatter:operatorbtn
+                }],
+                data: lst
+            });
+        }
+        function typeparse(value, row, index) {
+            if(row.type=='sm')return '小型';
+            else if(row.type=='md')return'中型';
+            else  return'大型';
+        }
+        function statusparse(value, row, index) {
+            if(row.status==0)return '未启动';
+            else if(row.status==1)return '未完成';
+            else  return'已完成';
+        }
+        function descparse(value, row, index) {
+            if(value.length >= 13){
+                return value.substr(0,10)+"...";
+            }
+            return value;
+        }
+        function finished(value, row, index) {
+            return '<span class="badge badge-success">'+value+'</span>'
+        }
+        function unfinished(value,row,index) {
+            if(value===0){
+                return '<span class="badge badge-info">'+value+'</span>'
+            }
+            return '<span class="badge badge-danger">'+value+'</span>'
+        }
+        function operatorbtn(value,row,index) {
+            return '<button class="btn btn-sm btn-primary mar-rgt" onclick="showModal(' + index + ')" >风险管理</button>'
+        }
+        
+        function showModal(index) {
+            var item = list[index];
+            selectedProjId = item.id;
+            console.log(item);
+            $("#risk-title").html(item.name+"-风险管理");
+            getRiskLst();
+            $("#risk-modal").modal("show");
+        }
+
+
+
+        function getRiskLst() {
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getRiskList",
+                data:JSON.stringify({"id":selectedProjId}),
+                success:function (lst) {
+                    risklist = lst;
+                    initRiskTable(lst)
+                }
+            });
+        }
+        initRiskTable()
+        function initRiskTable(list){
+            $('#risk-table').bootstrapTable('destroy');
+            $('#risk-table').bootstrapTable({
+                toolbar: '#risk-toolbar',
+                pageSize: 5,
+                pageList: [5, 10, 15],
+                pagination: true,
+                striped:true,
+                sortable: true,
+                showRefresh: true,
+                columns:[{
+                    field:'id',
+                    align:'center',
+                    title:'编号'
+                },{
+                    field:'updatetime',
+                    align:'center',
+                    title:'更新时间'
+                },{
+                    field:'description',
+                    align:'center',
+                    title:'描述',
+                    formatter:descparse
+                },{
+                    field:'type',
+                    align:'center',
+                    title:'类型',
+                    formatter:typeparse
+                },{
+                    field:'ownername',
+                    align:'center',
+                    title:'风险负责人'
+                },{
+                    field:'prior',
+                    align:'center',
+                    title:'优先级',
+                    formatter:priorparse
+                }, {
+                    align:'center',
+                    title:'处理',
+                    formatter:operatorbtn2
+                }],
+                data: list
+            });
+        }
+        function typeparse(value, row, index) {
+            if(value==0){
+                return '<span class="label label-success">已完成</span>';
+            }else if(value==1){
+                return '<span class="label label-default">人员风险</span>';
+            }else if(value==2){
+                return '<span class="label label-info">开发过程风险</span>';
+            }else if(value==3){
+                return '<span class="label label-purple">环境风险</span>';
+            }else if(value==4){
+                return '<span class="label label-warning">后勤风险</span>';
+            }else if(value==5){
+                return '<span class="label label-danger">需求风险</span>';
+            }else if(value==6){
+                return '<span class="label label-pink">进度风险</span>';
+            }
+        }
+
+        function priorparse(value, row, index) {
+            if(value==0){
+                return '<span class="label label-default">不重要</span>';
+            }else if(value==1){
+                return '<span class="label label-info">低</span>';
+            }else if(value==2){
+                return '<span class="label label-warning">中</span>';
+            }else if(value==3){
+                return '<span class="label label-danger">高</span>';
+            }else if(value==4){
+                return '<span class="label label-dark">紧急</span>';
+            }
+        }
+
+        function operatorbtn2(value, row, index){
+            return '<button class="btn btn-sm btn-primary mar-rgt" onclick="showModal2(' + index + ')" >更新处理</button>'
+        }
+
+        var userlist;
+        function showModal2(index) {
+            $("#risk-modal").modal("hide");
+            console.log(index);
+
+            //初始化
+            $("#type-0").attr("checked", false);
+            $("#type-1").attr("checked", false);
+            $("#type-2").attr("checked", false);
+            $("#type-3").attr("checked", false);
+            $("#type-4").attr("checked", false);
+            $("#type-5").attr("checked", false);
+            $("#type-6").attr("checked", false);
+            $("#prior-0").attr("checked", false);
+            $("#prior-1").attr("checked", false);
+            $("#prior-2").attr("checked", false);
+            $("#prior-3").attr("checked", false);
+            $("#prior-4").attr("checked", false);
+            $("#risk-desc").val("");
+
+            var user_lst = document.getElementById("list_user");
+            user_lst.innerHTML="";
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getProjTeam",
+                data:JSON.stringify({"id":selectedProjId}),
+                success:function (lst) {
+                    userlist = lst;
+                    for(var i in lst){
+                        user_lst.innerHTML+='<li><a onclick="selectUser('+i+')">'+lst[i].name+' '+lst[i].skills+'</a></li>';
+                    }
+                }
+            });
+            if(index == -1){
+                //新增
+                $("#type-1").attr("checked", true);
+                $("#prior-1").attr("checked", true);
+                $("#risk-desc").val("");
+                $("#risk-id").val(-1);
+                $("#user-id").val(-1);
+                $("#user-name").val("无负责人");
+                $("#submit-btn").html("提交风险报告")
+
+            }else{
+                var item = risklist[index];
+                $("#type-"+item.type).attr("checked", true);
+                $("#prior-"+item.prior).attr("checked", true);
+                $("#user-id").val(item.owner);
+                if(item.owner===-1){
+                    $("#user-name").val("无负责人");
+                }else{
+                    $("#user-name").val(item.ownername);
+                }
+
+                $("#risk-desc").val(item.description);
+                $("#risk-id").val(item.id);
+                $("#submit-btn").html("更新风险报告")
+            }
+            $("#risk-modal2").modal("show");
+        }
+
+
+        function submitRisk() {
+            var id =$("#risk-id").val();
+            var type=0;
+            $("input[name='type']:checked").each(function () {
+                type=$(this).val();
+            });
+            var prior=0;
+            $("input[name='prior']:checked").each(function () {
+                prior=$(this).val();
+            });
+            var risk={
+                "id":(id===-1)?null:id,
+                "projectid":selectedProjId,
+                "updatetime":"",
+                "type":type,
+                "prior":prior,
+                "description":$("#risk-desc").val(),
+                "owner":$("#user-id").val()
+            }
+
+            $.ajax({
+                type:"POST",
+                url:"/updateRisk",
+                contentType:'application/json;charset=UTF-8',
+                data:JSON.stringify(risk),
+                success:function (data) {
+                    if(data==="success"){
+                        $.niftyNoty({
+                            type: 'success',
+                            container : 'floating',
+                            title : '成功更新了报告',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myrisk";
+                            }
+                        });
+                    }else{
+                        $.niftyNoty({
+                            type: 'danger',
+                            container : 'floating',
+                            title : '更新失败',
+                            message : '',
+                            closeBtn : true,
+                            timer : 1000,
+                            onHide:function () {
+                                location = "/myrisk";
+                            }
+                        });
+                    }
+                }
+            });
+
+        }
+
+
+        function selectUser(index) {
+            $("#user-id").val(userlist[index].id);
+            $("#user-name").val(userlist[index].name);
+
+        }
+
+
+
+    </script>
+    
+    
+
+</div>
+<li><a href="#">Action</a></li>
+<li><a href="#">Another action</a></li>
+<li><a href="#">Something else here</a></li>
+<li class="divider"></li>
+<li><a href="#">Separated link</a></li>
+
+<!--
+
+
+                 url: queryUrl,                      //请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: rows,                     //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+ -->
+
+

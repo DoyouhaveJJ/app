@@ -16,7 +16,7 @@
     <!--noUiSlider [ OPTIONAL ]-->
     <script src="/plugins/noUiSlider/nouislider.min.js"></script>
     <div class="modal fade" id="add-modal" role="dialog" tabindex="-1" aria-labelledby="demo-default-modal" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
                 <!--Modal header-->
@@ -172,21 +172,8 @@
                 contentType:'application/json;charset=UTF-8',
                 url:"/getProjWithReport",
                 success:function (lst) {
-                    if(lst == ""){
-                        $.niftyNoty({
-                            type: 'danger',
-                            container : 'floating',
-                            title : '请先登录',
-                            message : '',
-                            closeBtn : true,
-                            timer : 1000
-                        });
-                    }else{
-                        console.log(lst);
-                        list = lst;
-                        initProjTable(lst);
-                    }
-
+                    list = lst;
+                    initProjTable(lst);
                 }
             });
         }
@@ -196,19 +183,7 @@
                 contentType:'application/json;charset=UTF-8',
                 url:"/getMyReport",
                 success:function (lst) {
-                    if(lst == ""){
-                        $.niftyNoty({
-                            type: 'danger',
-                            container : 'floating',
-                            title : '请先登录',
-                            message : '',
-                            closeBtn : true,
-                            timer : 1000
-                        });
-                    }else{
-                        initRepTable(lst);
-                    }
-
+                    initRepTable(lst);
                 }
             });
         }
@@ -217,8 +192,9 @@
                 toolbar: '#report-toolbar',
                 pageSize: 5,
                 pageList: [5, 10, 15],
-                pagination: 'true',
-                search: 'true',
+                pagination: true,
+                search: true,
+                sortable: true,
                 columns:[{
                     field:'title',
                     align:'center',
@@ -255,8 +231,9 @@
                 toolbar: '#project-toolbar',
                 pageSize: 5,
                 pageList: [5, 10, 15],
-                pagination: 'true',
-                search: 'true',
+                pagination: true,
+                search: true,
+                showRefresh:true,
                 columns:[{
                     field:'name',
                     align:'center',

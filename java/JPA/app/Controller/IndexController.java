@@ -25,5 +25,9 @@ public class IndexController {
     {
         return "business/myreport";
     }
-
+    @RequestMapping(value = "/myrisk")
+    public String MyRisk()
+    {
+        return "business/myrisk";
+    }
 }
