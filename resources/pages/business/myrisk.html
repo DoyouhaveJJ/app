@@ -32,7 +32,9 @@
                 </div>
 
                 <!--Modal footer-->
-
+                <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                </div>
             </div>
         </div>
     </div>
@@ -130,6 +132,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        <button onclick="backLast()" class="btn btn-default" type="button">返回</button>
                         <button class="btn btn-primary col-sm-2" type="button" onclick="submitRisk();" id="submit-btn">提交风险报告</button>
                     </div>
                 </form>
@@ -308,7 +311,7 @@
                     field:'type',
                     align:'center',
                     title:'类型',
-                    formatter:typeparse
+                    formatter:type2parse
                 },{
                     field:'ownername',
                     align:'center',
@@ -326,7 +329,7 @@
                 data: list
             });
         }
-        function typeparse(value, row, index) {
+        function type2parse(value, row, index) {
             if(value==0){
                 return '<span class="label label-success">已完成</span>';
             }else if(value==1){
@@ -422,6 +425,7 @@
                 $("#submit-btn").html("更新风险报告")
             }
             $("#risk-modal2").modal("show");
+            $("#risk-modal").modal("hide");
         }
 
 
@@ -488,7 +492,10 @@
 
         }
 
-
+        function backLast() {
+            $("#risk-modal2").modal("hide");
+            $("#risk-modal").modal("show");
+        }
 
     </script>
     
