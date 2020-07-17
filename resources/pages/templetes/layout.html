@@ -631,13 +631,13 @@
 
                                 <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==1}">
-                                    <a th:href="@{/#}">
+                                    <a th:href="@{/addproject}">
                                         <i class="pli-quill-2"></i>
                                         <span class="menu-title">新增外包项目</span>
                                     </a>
                                 </li>
-                                <li class="link" th:if="${session.user.getRole()==1}">
-                                    <a th:href="@{/#}">
+                                <li class="link" th:if="${session.user.getRole()==2}">
+                                    <a th:href="@{/project}">
                                         <i class="pli-quill-2"></i>
                                         <span class="menu-title">外包项目管理</span>
                                     </a>
@@ -656,14 +656,20 @@
                                 </li>
                                 <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==0}">
-                                    <a th:href="@{/#}">
+                                    <a th:href="@{/join}">
                                         <i class="pli-quill-2"></i>
                                         <span class="menu-title">加入外包项目</span>
                                     </a>
                                 </li>
                                 <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==0}">
-                                    <a th:href="@{/#}">
+                                    <a th:href="@{/memproject}">
+                                        <i class="pli-quill-2"></i>
+                                        <span class="menu-title">我的外包项目</span>
+                                    </a>
+                                </li>
+                                <li class="link" th:if="${session.user.getRole()==1}">
+                                    <a th:href="@{/myproject}">
                                         <i class="pli-quill-2"></i>
                                         <span class="menu-title">我的外包项目</span>
                                     </a>

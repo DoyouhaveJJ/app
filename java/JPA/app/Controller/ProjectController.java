@@ -1,8 +1,10 @@
 package JPA.app.Controller;
 
 import JPA.app.Entity.Project;
+import JPA.app.Entity.Team;
 import JPA.app.Entity.User;
 import JPA.app.Repository.ProjectRepository;
+import JPA.app.Repository.TeamRepository;
 import JPA.app.Repository.UserRepository;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -27,6 +29,8 @@ public class ProjectController
     //aaaaaaaaa
     @Autowired
     private ProjectRepository projectRepository;
+    @Autowired
+    private TeamRepository teamRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -139,18 +143,41 @@ public class ProjectController
     @ResponseBody
     public JSONArray getmyprojlst(HttpSession httpSession){
         User user=(User)httpSession.getAttribute("user");
-        if(user!=null){
+        JSONArray jsonArray=new JSONArray();
+        if(user!=null && user.getRole()!=0){
             List<Project> projLst=projectRepository.findByCreaterId(user.getId());
-            JSONArray jsonArray=JSONArray.parseArray(JSON.toJSONString(projLst));
+            jsonArray=JSONArray.parseArray(JSON.toJSONString(projLst));
+            if(jsonArray.isEmpty()){
+                JSONObject json=new JSONObject();
+                json.put("context","none");
+            }
+            return jsonArray;
+        }else if(user!=null && user.getRole()==0){
+            long userid=user.getId();
+            List<Team> teams=teamRepository.findByMemberId(userid);
+            for(Team t:teams){
+                long projid=t.getProjectId();
+                jsonArray.add(projectRepository.findById(projid));
+            }
+            if(jsonArray.isEmpty()){
+                JSONObject json=new JSONObject();
+                json.put("context","none");
+                jsonArray.add(json);
+            }
             return jsonArray;
         }
-        return null;
+            return null;
+
     }
 
     @RequestMapping(value = "/myproject")
     public String myproject(){return "main/project/myproject";}
     @RequestMapping(value = "/addproject")
     public String addproject(){return "main/project/addproject";}
+    @RequestMapping(value = "/memproject")
+    public String memproject(){return "main/project/memproject";}
+    @RequestMapping(value = "/join")
+    public String join(){return "main/project/join";}
     @RequestMapping(value = "/alterProj")
     @ResponseBody
     public String alterProj(@RequestBody Project proj,HttpSession httpSession){

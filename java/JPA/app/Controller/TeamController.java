@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.cj.xdevapi.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,6 +83,23 @@ public class TeamController
 
 
     }
+    @RequestMapping(value = "/joinin")
+    @ResponseBody
+    public String joinin(@RequestBody Project project,HttpSession httpSession){
+        User user=(User)httpSession.getAttribute("user");
+        if(user!=null){
+            long projid=project.getId();
+            project=projectRepository.findById(projid);
+            long createrid=project.getCreaterId();
+            Team team=new Team();
+            team.setProjectId(projid);
+            team.setMemberId(user.getId());
+            team.setCreaterId(createrid);
+            teamRepository.save(team);
+            return "success";
+        }
+        return "failure";
+    }
     @RequestMapping(value = "/remove")
     @ResponseBody
     public String remove(@RequestBody User target,HttpSession httpSession){
@@ -130,5 +148,18 @@ public class TeamController
             arr.add(json);
         }
         return arr;
+    }
+    @RequestMapping(value = "/checkmem")
+    @ResponseBody
+    public String checkmem(@RequestBody Team team, HttpSession httpSession){
+        long projid=team.getProjectId();
+        User user=(User)httpSession.getAttribute("user");
+        List<Team> teams=teamRepository.findByProjectId(projid);
+        for(Team t:teams){
+            if(user.getId()==t.getMemberId()){
+                return "yes";
+            }
+        }
+        return "no";
     }
 }
