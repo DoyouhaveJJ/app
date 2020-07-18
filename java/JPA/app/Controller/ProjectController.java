@@ -202,4 +202,8 @@ public class ProjectController
         Project proj=projectRepository.findById(id);
         return proj.getName();
     }
+    @RequestMapping(value = "/photo")
+    public String photo(){
+        return "main/project/photo";
+    }
 }

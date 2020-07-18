@@ -2,9 +2,14 @@ package JPA.app.Controller;
 
 import JPA.app.Entity.Project;
 import JPA.app.Entity.Report;
+import JPA.app.Entity.Risk;
+import JPA.app.Entity.User;
 import JPA.app.Repository.ProjectRepository;
 import JPA.app.Repository.ReportRepository;
+import JPA.app.Repository.RiskRepository;
 import JPA.app.Repository.UserRepository;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +40,10 @@ public class ExcelController
     private ProjectRepository projectRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RiskRepository riskRepository;
+
+
     @RequestMapping(value = "/excel")
     public String excel(){return"main/Excel";}
 
@@ -122,4 +131,145 @@ public class ExcelController
 
         return "success";
     }
+
+    //获取统计
+    @RequestMapping(value = "/getProjStatic")
+    @ResponseBody
+    public JSONObject getProjStatic(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Project> projects = projectRepository.findAll();
+        JSONArray jsonArray1 = new JSONArray();
+        JSONArray jsonArray2 = new JSONArray();
+        int unstart=0,staring=0,finished=0;
+        int sm=0,md=0,lg=0;
+        for(Project p : projects){
+            if(p.getStatus()==0){
+                unstart++;
+            }else if(p.getStatus()==1){
+                staring++;
+            }else if(p.getStatus()==2){
+                finished++;
+            }
+
+            if(p.getType().equals("sm")){
+                sm++;
+            }else if(p.getType().equals("md")){
+                md++;
+            }else if(p.getType().equals("lg")){
+                lg++;
+            }
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("y","未启动");
+        jsonObject.put("a",unstart);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("y","进行中");
+        jsonObject.put("a",staring);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("y","已结束");
+        jsonObject.put("a",finished);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("y","小型");
+        jsonObject.put("a",sm);
+        jsonArray2.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("y","中型");
+        jsonObject.put("a",md);
+        jsonArray2.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("y","大型");
+        jsonObject.put("a",lg);
+        jsonArray2.add(jsonObject);
+
+        JSONObject res = new JSONObject();
+        res.put("1",jsonArray1);
+        res.put("2",jsonArray2);
+        return res;
+    }
+
+    @RequestMapping(value = "/getRiskStatic")
+    @ResponseBody
+    public JSONObject getRiskStatic(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Risk> risks = riskRepository.findAll();
+        int t0=0,t1=0,t2=0,t3=0,t4=0,t5=0,t6=0;
+        for(Risk r : risks){
+            switch (r.getType()){
+                case 0:{t0++;break;}
+                case 1:{t1++;break;}
+                case 2:{t2++;break;}
+                case 3:{t3++;break;}
+                case 4:{t4++;break;}
+                case 5:{t5++;break;}
+                case 6:{t6++;break;}
+            }
+        }
+        JSONArray jsonArray1 = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        //0=已处理，1=人员，2=开发过程，3=环境，4=后勤，5=需求，6=进度
+        jsonObject.put("label","已处理风险");
+        jsonObject.put("value",t0);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","人员风险");
+        jsonObject.put("value",t1);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","开发过程风险");
+        jsonObject.put("value",t2);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","环境风险");
+        jsonObject.put("value",t3);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","后勤风险");
+        jsonObject.put("value",t4);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","需求风险");
+        jsonObject.put("value",t5);
+        jsonArray1.add(jsonObject);
+        jsonObject = new JSONObject();
+        jsonObject.put("label","进度风险");
+        jsonObject.put("value",t6);
+        jsonArray1.add(jsonObject);
+
+        JSONObject res = new JSONObject();
+        res.put("1",jsonArray1);
+        return res;
+
+    }
+
+    @RequestMapping(value = "/getReportStatic")
+    @ResponseBody
+    public JSONArray getReportStatic(HttpSession httpSession){
+        User u = (User)httpSession.getAttribute("user");
+        if(u==null){
+            return null;
+        }
+        List<Report> reportList = reportRepository.findAll();
+        int[] counter=new int[11];
+        for(Report r : reportList){
+            counter[(r.getProgress()/10)] ++ ;
+        }
+        JSONArray res = new JSONArray();
+        for(int i = 0 ; i < 11 ; ++i){
+            JSONObject jsonObject =new JSONObject();
+            jsonObject.put("period","完成进度"+i*10+"%");
+            jsonObject.put("dl",counter[i]);
+            res.add(jsonObject);
+        }
+        return res;
+    }
+
 }

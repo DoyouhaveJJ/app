@@ -470,18 +470,5 @@ $(document).on('nifty.ready', function () {
     // -----------------------------------------------------------------
     // http://morrisjs.github.io/morris.js/
     // =================================================================
-    Morris.Donut({
-        element: 'demo-morris-donut',
-        data: [
-            {label: 'Download Sales', value: 12},
-            {label: 'In-Store Sales', value: 30},
-            {label: 'Mail-Order Sales', value: 20}
-        ],
-        colors: [
-            '#ec407a',
-            '#03a9f4',
-            '#d8dfe2'
-        ],
-        resize:true
-    });
+    demo-morris-area-full
 });

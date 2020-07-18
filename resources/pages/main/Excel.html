@@ -11,11 +11,15 @@
     <script src="/plugins/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/plugins/chosen/chosen.jquery.min.js"></script>
     <script src="/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+    <!--Morris.js [ OPTIONAL ]-->
+    <link href="plugins/morris-js/morris.min.css" rel="stylesheet">
 </head>
 
 
 <div layout:fragment="content">
-
+    <!--Morris.js [ OPTIONAL ]-->
+    <script src="plugins/morris-js/morris.min.js"></script>
+    <script src="plugins/morris-js/raphael-js/raphael.min.js"></script>
 
     <div class="col-lg-10 col-lg-offset-1">
         <div class="panel">
@@ -51,7 +55,201 @@
     </div>
 
 
+
+    <div class="row">
+        <div class="col-md-3 col-lg-offset-1">
+
+            <!-- Bar Chart -->
+            <!---------------------------------->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">项目状态统计</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="bar-chart-1" style="height: 250px"></div>
+                </div>
+            </div>
+            <!---------------------------------->
+
+        </div>
+        <div class="col-md-3">
+
+            <!-- Bar Chart -->
+            <!---------------------------------->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">项目种类统计</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="bar-chart-2" style="height: 250px"></div>
+                </div>
+            </div>
+            <!---------------------------------->
+
+        </div>
+        <div class="col-md-4">
+
+
+            <!-- Donut Chart -->
+            <!---------------------------------->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">风险统计</h3>
+                </div>
+                <div class="panel-body">
+                    <div id="pie-chart-1" class="morris-donut" style="height: 250px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="panel">
+
+                <div class="panel-body">
+
+                    <div id="full-chart-full" class="text-center"></div>
+                    <div id="full-chart" class="morris-full-content" style="height: 300px"></div>
+                    <div class="">
+                        <h4>项目总体进度概览</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!---------------------------------->
+
 <script src="/js/excel.js"></script>
+    <script>
+        getProjData();
+        getRiskData();
+        getReportData();
+        function getProjData(){
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getProjStatic",
+                success:function (data) {
+                    console.log(data);
+                    initBarchar1(data["1"]);
+                    initBarchar2(data["2"]);
+                }
+            });
+            //getProjStatic
+        }
+        function getRiskData(){
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getRiskStatic",
+                success:function (data) {
+                    console.log(data);
+                    initPiechart1(data["1"]);
+                }
+            });
+            //getProjStatic
+        }
+        function getReportData(){
+            $.ajax({
+                type:"POST",
+                contentType:'application/json;charset=UTF-8',
+                url:"/getReportStatic",
+                success:function (data) {
+                    console.log(data);
+                    initReportChart(data);
+                }
+            });
+            //getReportStatic
+        }
+        function initBarchar1(data){
+            console.log(data);
+            Morris.Bar({
+                element: 'bar-chart-1',
+                data: data,
+                xkey: 'y',
+                ykeys: ['a'],
+                labels: ['数量'],
+                gridEnabled: true,
+                gridLineColor: 'rgba(0,0,0,.1)',
+                gridTextColor: '#8f9ea6',
+                gridTextSize: '10px',
+                barColors: ['#1abc9c'],
+                resize:true,
+                hideHover: 'auto'
+            });
+
+        }
+        function initBarchar2(data){
+            console.log(data);
+            Morris.Bar({
+                element: 'bar-chart-2',
+                data: data,
+                xkey: 'y',
+                ykeys: ['a'],
+                labels: ['数量'],
+                gridEnabled: true,
+                gridLineColor: 'rgba(0,0,0,.1)',
+                gridTextColor: '#8f9ea6',
+                gridTextSize: '10px',
+                barColors: ['#5c6bbc'],
+                resize:true,
+                hideHover: 'auto'
+            });
+
+        }
+        ///0=已处理，1=人员，2=开发过程，3=环境，4=后勤，5=需求，6=进度
+        function initPiechart1(data){
+            Morris.Donut({
+                element: 'pie-chart-1',
+                data: data,
+                colors: [
+                    '#52ec55',
+                    '#eff4f2',
+                    '#12b5e2',
+                    '#a220ec',
+                    '#f4bf27',
+                    '#e22c4a',
+                    '#ec4cdd'
+
+                ],
+                resize:true
+            });
+        }
+        function initReportChart(data) {
+            var chart = Morris.Area({
+                element: 'full-chart',
+                data: data,
+                gridEnabled: true,
+                gridLineColor: 'rgba(0,0,0,.1)',
+                behaveLikeLine: true,
+                smooth: true,
+                axes:false,
+                xkey: 'period',
+                ykeys: ['dl'],
+                labels: ['数量'],
+                lineColors: ['#78c855'],
+                pointSize: 0,
+                pointStrokeColors : ['#045d97'],
+                lineWidth: 0,
+                resize:true,
+                hideHover: 'auto',
+                fillOpacity: 0.8,
+                parseTime:false
+            });
+
+            chart.options.labels.forEach(function(label, i){
+                var legendItem = $('<div class=\'morris-legend-items\'></div>').text(label);
+                $('<span></span>').css('background-color', chart.options.lineColors[i]).prependTo(legendItem);
+                $('#full-chart-full').append(legendItem)
+            })
+
+
+        }
+
+    </script>
 </div>
 
 
