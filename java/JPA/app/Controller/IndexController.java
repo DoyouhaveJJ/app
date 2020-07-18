@@ -16,18 +16,22 @@ import javax.servlet.http.HttpSession;
 public class IndexController {
     //fucker
     @RequestMapping(value = "/myself")
-    public String Myself()
-    {
+    public String Myself() {
         return "main/myself";
     }
+
     @RequestMapping(value = "/myreport")
-    public String MyReport()
-    {
+    public String MyReport() {
         return "business/myreport";
     }
+
     @RequestMapping(value = "/myrisk")
-    public String MyRisk()
-    {
+    public String MyRisk() {
         return "business/myrisk";
+    }
+
+    @RequestMapping(value = "/ad")
+    public String AdminUser() {
+        return "main/project/administrator";
     }
 }
