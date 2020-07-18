@@ -358,6 +358,13 @@
                                     </a>
                                 </li>
                                 <!--Menu list item-->
+                                <li class="link" th:if="${session.user.getRole()==2}">
+                                    <a th:href="@{/role.html}">
+                                        <i class="pli-quill-2"></i>
+                                        <span class="menu-title">权限管理</span>
+                                    </a>
+                                </li>
+                                <!--Menu list item-->
                                 <li class="link" th:if="${session.user.getRole()==0}">
                                     <a th:href="@{/memproject}">
                                         <i class="pli-quill-2"></i>
