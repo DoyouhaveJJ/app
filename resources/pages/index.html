@@ -4,15 +4,97 @@
       layout:decorator="templetes/layout.html">
 
 <head>
-    <title>页面1</title>
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="css/demo/nifty-demo-icons.min.css" rel="stylesheet">
+    <title>WBManager</title>
+    <!--Unite Gallery [ OPTIONAL ]-->
+
 </head>
 
 <div layout:fragment="content">
-    <div class="col-lg-10 col-lg-offset-1">
-    <div class="panel panel-body">
-        <div class="panel-body">
+
+    <hr class="new-section-md bord-no">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <!-- Line Chart -->
+            <!---------------------------------->
+            <div class="panel">
+                <div class="panel-heading">
+                    <h3 class="panel-title">欢迎来到WBmanager</h3>
+                </div>
+                <div class="pad-all">
+
+                    <h1 class="text-main" th:if="${session.user==null}">
+                        欢迎,您可以先<a href="/login">登录</a>
+                        <small>或在左侧导航栏登录..</small>
+                    </h1>
+                    <h1 class="text-main" th:unless="${session.user==null}">
+                        欢迎您,<text th:text="${session.user.name}"></text>
+                        <small>在左侧导航栏进行业务操作</small>
+                    </h1>
+                </div>
+            </div>
+            <!---------------------------------->
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-warning panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-file-word icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">213</p>
+                            <p class="mar-no">进行中的外包项目</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-info panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-file-zip icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">450</p>
+                            <p class="mar-no">项目经理</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-mint panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-camera-2 icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">114514</p>
+                            <p class="mar-no">开发人员</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-purple panel-colorful media middle pad-all">
+                        <div class="media-left">
+                            <div class="pad-hor">
+                                <i class="demo-pli-video icon-3x"></i>
+                            </div>
+                        </div>
+                        <div class="media-body">
+                            <p class="text-2x mar-no text-semibold">1919810</p>
+                            <p class="mar-no">代码行数</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
 
         </div>
     </div>
+
 </div>
 </div>
+</html>
