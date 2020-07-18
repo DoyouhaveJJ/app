@@ -158,8 +158,10 @@ function skill(value,row,index){
         let skillarr=skillstr.split(';');
         for(let skill of skillarr){
             if(skill!==''){
-                label+='<label class="label label-primary label-table">'+skill+'</label>';
+                console.log(skill);
+                label=label+'<label class="label label-primary label-table">'+skill+'</label>';
             }
+            console.log(label);
         }
     }
     return label;
