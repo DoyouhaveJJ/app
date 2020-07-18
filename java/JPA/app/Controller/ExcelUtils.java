@@ -37,9 +37,6 @@ import com.google.common.collect.Maps;
 public class ExcelUtils
 {
 
-    // @Value("${file_base_path}")
-    // private static String fileBasePath;//文件的基础路径
-    // private static String fileBasePath = System.getProperty("user.dir") + File.separator + "excel" + File.separator;;//文件的基础路径
 
     public static final String OFFICE_EXCEL_XLS = "xls";
     public static final String OFFICE_EXCEL_XLSX = "xlsx";

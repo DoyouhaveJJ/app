@@ -30,4 +30,9 @@ public class IndexController {
     {
         return "business/myrisk";
     }
+    @RequestMapping(value = "/")
+    public String index()
+    {
+        return "main/login";
+    }
 }
