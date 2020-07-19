@@ -31,9 +31,9 @@ public class IndexController {
         return "business/myrisk";
     }
 
-    @RequestMapping(value = "/ad")
+    @RequestMapping(value = "/role")
     public String AdminUser() {
-        return "main/project/administrator";
+        return "main/project/role";
     }
     @RequestMapping(value = "/")
     public String index()
