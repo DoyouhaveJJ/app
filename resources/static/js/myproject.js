@@ -275,7 +275,7 @@ function addProj() {
                         closeBtn: true,
                         timer: 1000,
                         onHidden:function () {
-                            window.location.href="/project";
+                            window.location.href="/myproject";
                         }
                     });
                 } else if(data==="failure") {
@@ -286,7 +286,7 @@ function addProj() {
                         closeBtn: true,
                         timer: 1000,
                         onHidden:function () {
-                            window.location.href="/project";
+                            window.location.href="/myproject";
                         }
                     });
                 }
